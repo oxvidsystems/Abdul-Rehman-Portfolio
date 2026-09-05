@@ -1,0 +1,8 @@
+# Abdul Rehman — OXVID Systems
+# The portfolio itself is meant to be found. The internal design-token QA
+# page and the lead endpoints are not.
+
+User-agent: *
+Allow: /
+Disallow: /design-system
+Disallow: /api/

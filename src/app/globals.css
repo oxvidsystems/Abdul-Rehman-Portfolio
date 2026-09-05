@@ -1,0 +1,3230 @@
+@import "tailwindcss";
+
+/* =========================================================
+   STEP 17 — SELF-HOSTED TYPEFACES
+
+   These were loaded from fonts.googleapis.com with a <link> in the head.
+   That is a render-blocking stylesheet on a third-party origin: DNS, TLS
+   and a round trip to Google before a single glyph can even be requested,
+   then a second hop to fonts.gstatic.com for the files themselves. It also
+   sent every visitor's IP and referrer to Google on every page view, and it
+   forced any Content-Security-Policy to whitelist two external origins.
+
+   The files are now served from /public/fonts, same origin, discovered
+   while the browser is already parsing this stylesheet. They are the exact
+   latin subsets from the Fontsource distributions of the upstream OFL
+   families (licences alongside them in public/fonts).
+
+   ONLY THE WEIGHTS ACTUALLY USED. The Google URL asked for ten faces; the
+   codebase uses seven. Archivo 900, IBM Plex Mono 500 and IBM Plex Mono 600
+   were being fetched by nobody. 134 KB total, woff2 only.
+
+   `swap` keeps text visible immediately; the fallback stacks below are
+   metric-adjacent enough that the swap is not a jolt.
+   ========================================================= */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/archivo-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/archivo-800.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/inter-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Mrs Saint Delafield";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/mrs-saint-delafield-400.woff2") format("woff2");
+}
+
+
+/* Dynamic class names built via template literals on the internal
+   /design-system QA page (e.g. `bg-${color}`) aren't visible to
+   Tailwind's static scanner as complete tokens, so they're safelisted
+   here explicitly. Keep this list in sync with that page only —
+   real site components should use literal class names instead. */
+@source inline("{bg,text,border}-{paper-0,paper-50,paper-100,paper-200,paper-300,paper-400,ink-950,ink-900,ink-800,ink-700,ink-600,ink-500,ink-400,ink-300,ink-200,ink-100,accent-mint,accent-cyan,accent-teal,accent-teal-dark,accent-green,accent-green-dark}");
+@source inline("rounded-{none,xs,sm,md,pill}");
+@source inline("shadow-{xs,sm,md,lg,accent-glow}");
+@source inline("p-{1,2,3,4,5,6,8,10,12,16,20,24,section-sm,section-md,section-lg}");
+
+/* =========================================================
+   OXVID / ABDUL REHMAN PORTFOLIO — DESIGN TOKENS
+   Single source of truth for color, type, spacing, radius,
+   shadow, motion and breakpoint tokens. Every future section
+   must consume these tokens instead of inventing new values.
+   Balance target (client-confirmed 2026-08-28): 70% light /
+   30% green-teal-cyan family (dark brand surfaces + accents together).
+   ========================================================= */
+@theme {
+  /* ---------- COLOR: light "paper" surfaces (the ~80%) ---------- */
+  --color-paper-0: #ffffff;
+  --color-paper-50: #fafaf9;
+  --color-paper-100: #f4f4f2;
+  --color-paper-200: #e9e9e6;
+  --color-paper-300: #dcdcd8;
+  --color-paper-400: #c7c7c2;
+
+  /* ---------- COLOR: OXVID dark GREEN brand surface (part of the ~30%) ---------- */
+  /* Per explicit client correction (2026-08-28): this must read as a
+     GREEN shade, not neutral grey/charcoal. Built from the same hue
+     family as the logo mark's teal-green gradient, just darkened —
+     not sampled from the logo's neutral background plate anymore. */
+  --color-ink-950: #0c1715;
+  --color-ink-900: #2e8986;
+  --color-ink-800: #18302b;
+  --color-ink-700: #1f423b; /* primary dark brand surface — deep teal-green */
+  --color-ink-600: #2c5950;
+  --color-ink-500: #3b7267;
+  --color-ink-400: #539386;
+  --color-ink-300: #7db0a6;
+  --color-ink-200: #afcac5;
+  --color-ink-100: #d9e3e1;
+
+  /* ---------- COLOR: green / teal / cyan accent (rest of the ~30%) ---------- */
+  /* Sampled/adjusted from the gradient inside the OXVID logo mark.
+     Together with the ink scale above, this is the full "green shade"
+     family the client asked for — used for highlights, active states,
+     focus rings and, combined with ink, dark section surfaces. The
+     logo asset itself is never placed on the site; only these derived
+     colors are reused. */
+  --color-accent-mint: #a8e6db;
+  --color-accent-cyan: #85d6d3;
+  --color-accent-teal: #30a696;
+  --color-accent-teal-dark: #1f7a6e;
+  --color-accent-green: #59c07b;
+  --color-accent-green-dark: #309151;
+
+  /* ---------- SIGNAL (validation feedback only) ---------- */
+  /* The palette is deliberately green-family, so it has no colour that
+     reads as "check this". One warm red, desaturated to sit beside the
+     ink scale rather than shout over it. Used for input validation
+     messages only — never as a decorative accent. */
+  --color-signal-error: #b4503f;
+
+  /* ---------- SEMANTIC ALIASES (use these in components) ---------- */
+  --color-bg-base: var(--color-paper-50);
+  --color-bg-surface: var(--color-paper-0);
+  --color-bg-inverse: var(--color-ink-700);
+  --color-text-primary: var(--color-ink-900);
+  --color-text-secondary: var(--color-ink-500);
+  --color-text-inverse: var(--color-paper-0);
+  --color-border-subtle: var(--color-paper-300);
+  --color-border-strong: var(--color-ink-200);
+  --color-accent-primary: var(--color-accent-teal);
+  --color-accent-secondary: var(--color-accent-green);
+  --color-accent-highlight: var(--color-accent-mint);
+
+  /* ---------- TYPOGRAPHY ---------- */
+  /* Archivo (display) + Inter (body) + IBM Plex Mono (labels/mono),
+     self-hosted from /public/fonts — see the @font-face block at the top
+     of this file for why they are no longer fetched from Google. System
+     stacks remain as the fallback chain. */
+  --font-display: "Archivo", -apple-system, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  /* Stylized script wordmark of Abdul Rehman's own name, used as a
+     "signature" flourish on the Hero portrait — client-requested;
+     there is no real signature scan/asset on file, so per the client's
+     explicit go-ahead this is a decorative typographic treatment of
+     his own name, not a claim of a scanned real signature. */
+  --font-signature: "Mrs Saint Delafield", cursive;
+
+  /* Fluid, oversized editorial scale */
+  --text-display-1: clamp(2.75rem, 1.6rem + 5vw, 7.5rem);
+  --text-display-2: clamp(2.25rem, 1.5rem + 3.5vw, 5rem);
+  --text-h1: clamp(1.875rem, 1.5rem + 1.5vw, 3rem);
+  --text-h2: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
+  --text-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  --text-body-lg: 1.125rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-micro: 0.75rem;
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-normal: 1.6;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.08em;
+  --tracking-widest: 0.2em;
+
+  /* ---------- SPACING ---------- */
+  /* Tailwind derives its whole numeric spacing scale (p-1, gap-4, ...)
+     from this single base unit. Named section-level tokens sit on top
+     for the generous editorial rhythm the brief calls for. */
+  --spacing: 0.25rem;
+  --spacing-section-sm: 5rem;
+  --spacing-section-md: 8rem;
+  --spacing-section-lg: 12rem;
+  --spacing-gutter: 1.5rem;
+  --spacing-nav-width: 22rem;
+
+  /* ---------- BORDERS ---------- */
+  /* Near-flat by default per the original brief, with one deliberate
+     exception: --radius-lg is the client-requested "give every button a
+     little radius" token (2026-09-05) — used only on button chrome. */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px; /* button chrome only — the site-wide "thora radius" pass */
+  --radius-xl: 20px; /* big feature-card radius — section-ending CTA banners */
+  --radius-pill: 999px; /* reserved for pill-shaped chips/badges only */
+
+  /* ---------- SHADOWS ---------- */
+  /* Soft, low-contrast, editorial — never glassmorphism/heavy drop shadow. */
+  --shadow-xs: 0 1px 2px rgba(16, 20, 26, 0.04);
+  --shadow-sm: 0 2px 8px rgba(16, 20, 26, 0.06);
+  --shadow-md: 0 8px 24px rgba(16, 20, 26, 0.08);
+  --shadow-lg: 0 24px 64px rgba(16, 20, 26, 0.12);
+  --shadow-accent-glow: 0 0 40px rgba(47, 174, 156, 0.25);
+
+  /* ---------- MOTION ---------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Step 15: one scale, with each step given a job so the choice is not a
+     matter of taste at the call site.
+       instant  — a value snapping (a counter, a label swap)
+       fast     — POINTER FEEDBACK. Hover and focus live here. 400ms of
+                  lag on a hover reads as a slow machine, not as elegance.
+       base     — a component changing state on its own (a highlight
+                  sliding, a panel settling)
+       slow     — content arriving on scroll
+       cinematic— the few large reveals that carry a whole section */
+  --duration-instant: 100ms;
+  --duration-fast: 180ms;
+  --duration-base: 400ms;
+  --duration-slow: 620ms;
+  --duration-cinematic: 900ms;
+
+  /* Hero entrance-reveal + scroll-cue animations (Step 04). Named
+     via --animate-* so Tailwind generates matching animate-* utility
+     classes; the @keyframes themselves live just below the theme
+     block. Reused by later sections instead of one-off keyframes. */
+  /* 700ms and 1200ms read as hesitant once the rest of the page tightened
+     up; at 620/900 the same reveals feel composed rather than slow. */
+  --animate-reveal-up: reveal-up var(--duration-slow) var(--ease-out-expo) both;
+  --animate-reveal-scale: reveal-scale var(--duration-cinematic) var(--ease-out-expo) both;
+  --animate-scroll-cue: scroll-cue 1.8s var(--ease-in-out-cubic) infinite;
+
+  /* ---------- BREAKPOINTS ---------- */
+  /* --breakpoint-lg is where the fixed-left-nav / scrollable-right-content
+     layout switches on; below it, the mobile-redesigned layout applies. */
+  --breakpoint-xs: 23.4375rem; /* 375px */
+  --breakpoint-sm: 40rem;      /* 640px */
+  --breakpoint-md: 48rem;      /* 768px */
+  --breakpoint-lg: 64rem;      /* 1024px */
+  --breakpoint-xl: 80rem;      /* 1280px */
+  --breakpoint-2xl: 96rem;     /* 1536px */
+  --breakpoint-3xl: 120rem;    /* 1920px */
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 44px);
+    opacity: 0;
+  }
+}
+
+/* =========================================================
+   STEP 16 - MOBILE RHYTHM
+   The editorial section rhythm was authored on a 1440px canvas. Carried
+   verbatim onto a phone, 8rem above and below every section is about a
+   third of the screen spent on nothing - which is why the page measured 21
+   viewports and why most sections opened on an empty screen. Redefining
+   the tokens under lg rescales one spacing language instead of scattering
+   per-component overrides through eight components.
+   ========================================================= */
+@media (max-width: 63.999rem) {
+  :root {
+    --spacing-section-sm: 3rem;
+    --spacing-section-md: 4.5rem;
+    --spacing-section-lg: 5rem;
+  }
+}
+
+/* Short viewports - roughly an iPhone SE in portrait and below. The Hero's
+   portrait frame is height-driven so that a pinned slide can never overflow,
+   which means that on a 568px screen the frame is only about 170px wide. The
+   two credential pills are wider than that and end up sitting on top of the
+   photograph they annotate, and the signature outgrows the frame with them.
+   Both facts are carried elsewhere (About states the seven years outright,
+   Contact carries the invitation), so on these screens the photograph wins
+   and the annotations step off. */
+@media (max-height: 40rem) and (max-width: 40rem) {
+  .hero-credential {
+    display: none;
+  }
+  .hero-signature {
+    font-size: 1.125rem;
+  }
+  .hero-lead-copy {
+    display: none;
+  }
+  .hero-visual-lead {
+    display: none;
+  }
+}
+
+/* Ambient hero texture (the drifting studio light and the sparkle field)
+   is atmosphere, not information. It is two permanently running
+   compositor animations behind every hero slide; on a phone that is
+   battery spent on something the reader cannot even see under the type.
+   The gradients stay - only the perpetual motion stops. */
+@media (max-width: 63.999rem) {
+  .hero-ambient {
+    animation: none !important;
+  }
+}
+
+/* =========================================================
+   SHORT DESKTOP WINDOWS
+
+   Step 16 made the Hero's portrait frame height-driven below `lg`, because a
+   pinned slide cannot scroll and a width-driven 4:5 frame pushed the copy off
+   the bottom of a phone. Desktop was left width-driven — and never tested
+   short.
+
+   In a wide but SHORT window the same fault appears from the other side: at
+   1440x620 the frame wants 500x625 inside a 620px viewport, so the frame and
+   the two credential pills that sit proud of it overflow the pinned slide,
+   which has `overflow-hidden` — and both pills are sliced flat, top and
+   bottom. Reported from a real window; reproduced at 1280x560, 1440x560/620/
+   680 and 1600x560/620/680/740.
+
+   Capping the height lets the crop adapt instead. The portrait is
+   `object-cover object-top`, so a shorter frame simply holds the head and
+   shoulders rather than the full length — the right thing to show when there
+   is no room for the rest. The budget covers the slide's own 64px top and
+   40px bottom padding plus the 16px each pill stands proud, with room spare.
+
+   On a normal window the cap never binds: 1440x900 stays 500x625 and
+   1920x1080 stays 609x761, unchanged.
+   ========================================================= */
+@media (min-width: 64rem) {
+  .hero-portrait-frame {
+    max-height: calc(100vh - 10rem);
+  }
+}
+
+/* =========================================================
+   STEP 18 — THE ARRIVAL
+
+   The Hero was pixel-identical at 300ms and at 5s. Every other section on
+   this site reveals as it enters; the one screen every visitor sees just
+   appeared, fully formed, and then sat there. For a site whose whole claim
+   is craft, the first five seconds were the only five seconds that made no
+   argument at all.
+
+   So the opening composes itself: the eyebrow, then the headline lines
+   wiping up out of their own bounds, then the sub-line and the call to
+   action, with the portrait frame clipping in alongside them and the two
+   credential pills settling last. One second, one direction, no bounce —
+   the same restraint as the rest of the motion system.
+
+   `both` on every one of these matters: it holds the from-state before the
+   delay elapses, so nothing flashes at full opacity and then animates.
+   ========================================================= */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The headline lines travel inside a clipped box, so they read as rising
+   out of the page rather than fading onto it. */
+@keyframes hero-line {
+  from {
+    transform: translate3d(0, 108%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* A downward wipe rather than a fade: the frame is a physical object being
+   uncovered, which is what makes the portrait feel placed instead of loaded. */
+@keyframes hero-frame {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+.hero-intro-eyebrow { animation: hero-rise 620ms var(--ease-out-expo) 60ms both; }
+.hero-intro-sub     { animation: hero-rise 720ms var(--ease-out-expo) 520ms both; }
+.hero-intro-cta     { animation: hero-rise 720ms var(--ease-out-expo) 640ms both; }
+.hero-intro-frame   { animation: hero-frame 1100ms var(--ease-out-expo) 120ms both; }
+.hero-intro-pill    { animation: hero-rise 640ms var(--ease-out-expo) 820ms both; }
+.hero-intro-chrome  { animation: hero-rise 640ms var(--ease-out-expo) 900ms both; }
+
+/* The clip box has to be taller than the line so descenders survive being
+   hidden; the negative margin gives the extra room back to the layout. */
+.hero-intro-clip {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.hero-intro-line {
+  display: block;
+  animation: hero-line 980ms var(--ease-out-expo) both;
+}
+
+/* An arrival is exactly the kind of motion someone turns off. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-intro-eyebrow,
+  .hero-intro-sub,
+  .hero-intro-cta,
+  .hero-intro-frame,
+  .hero-intro-pill,
+  .hero-intro-chrome,
+  .hero-intro-line {
+    animation: none !important;
+  }
+  .hero-intro-frame {
+    clip-path: none;
+  }
+}
+
+/* Hero role rotator — "Abdul Rehman" / "Web Developer" / "Automation
+   Expert" looping under the slide-1 headline. The clip box keeps a
+   descender-safe overflow the same way .hero-intro-clip does, so a word
+   with a tall ascender/descender never gets visibly cropped mid-crossfade.
+   JS pauses this outright when off-screen or under reduced-motion (see
+   RoleRotator in hero-slider.tsx); this media query is the CSS-level
+   backup for that same preference. */
+.hero-role-rotator {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.hero-role-word.is-in {
+  animation: hero-role-in 420ms var(--ease-out-expo) both;
+}
+.hero-role-word.is-out {
+  animation: hero-role-out 420ms ease-in both;
+}
+@keyframes hero-role-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.3em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hero-role-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.3em);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-role-word.is-in,
+  .hero-role-word.is-out {
+    animation: none !important;
+  }
+}
+
+/* ---------- Hero slide-3 one-off decorative keyframes ---------- */
+/* Used via arbitrary animate-[name_...] utilities directly in
+   hero-slider.tsx / hero-agent-graphic.tsx — not promoted to the
+   shared --animate-* token scale above since these are specific to
+   that one section's studio-light / AI-agent visuals. */
+@keyframes hero-twinkle {
+  0% { opacity: 0.25; }
+  100% { opacity: 0.6; }
+}
+@keyframes hero-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-2%, 3%) scale(1.06); }
+}
+/* hero-orbit-spin and hero-core-pulse were removed in Step 15: a perpetual
+   360deg rotation and a 2.6s scale pulse are exactly the two things the brief
+   rules out, and neither told the reader anything. */
+
+/* The Step 09 pinned 3D gallery and its component classes were removed in
+   Step 20 along with the component itself. The replacement is the project
+   deck further down this file (.pw-*): the same fourteen projects, shown one
+   at a time at real size in a single stage, instead of five and a half
+   viewports of pinned scroll. */
+
+
+@layer base {
+  * {
+    border-color: var(--color-border-subtle);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   CONTACT — the enquiry form
+   ==========================================================================
+   It sits to the right of "Let's build what's next." and must not compete
+   with it, so there is no panel, no border box and no second headline: the
+   fields are ruled lines on the section's own ground, which is the same
+   vocabulary the destination blocks underneath already use.
+
+   Inputs carry `color-scheme: dark` so the browser's own chrome — the
+   select popup, the caret, autofill — comes up dark too. Without it Chrome
+   paints an autofilled field white on white here and the field vanishes.
+   ---------------------------------------------------------------------- */
+
+.cf-wrap {
+  min-width: 0;
+  scroll-margin-top: 124px;
+  /* The vanishing point. Kept on the outermost element so the rotation below
+     is measured against the whole column rather than against itself. */
+  perspective: 1600px;
+  perspective-origin: 30% 50%;
+}
+@media (min-width: 64rem) {
+  .cf-wrap { margin-top: clamp(24px, 3vh, 48px); }
+}
+
+/* The plate. At rest it is turned a few degrees away, so it reads as an
+   object standing in the page rather than a rectangle printed on it; the
+   moment the pointer arrives or a field takes focus it squares up and lifts,
+   because a form you are filling in should face you. That is the whole
+   gesture — nothing tilts while you type. */
+.cf-stage {
+  position: relative;
+  transform: rotateY(3.6deg) rotateX(1.4deg);
+  transform-origin: 88% 50%;
+  transition:
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 34px 44px rgba(0, 0, 0, 0.42));
+}
+@media (min-width: 64rem) {
+  .cf-wrap:hover .cf-stage,
+  .cf-stage:focus-within {
+    transform: rotateY(0deg) rotateX(0deg) translateY(-6px);
+    filter: drop-shadow(0 44px 56px rgba(0, 0, 0, 0.5));
+  }
+  .cf-wrap:hover .cf,
+  .cf-stage:focus-within .cf {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+      2px 3px 0 -1px rgba(9, 18, 16, 0.6),
+      0 34px 52px -24px rgba(0, 0, 0, 0.6),
+      0 74px 104px -60px rgba(0, 0, 0, 0.95);
+  }
+}
+
+/* Below the desktop breakpoint the panel is the full column and there is no
+   pointer to square it up with, so it never leaves square. */
+@media (max-width: 63.99rem) {
+  .cf-stage { transform: none; filter: none; }
+}
+
+.cf {
+  position: relative;
+  z-index: 1;
+  /* A dark, mostly-solid plate — not a light glass tint. The section's own
+     gradient/glow bleeding through a light 5% panel was exactly what made
+     every label and value read as hazy/blurry; backing the plate in the
+     brand's near-black instead gives text real, flat contrast to sit on. */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(12, 23, 21, 0.72);
+  backdrop-filter: blur(26px) saturate(115%);
+  /* The depth is all in this stack, in order: a lit top edge and a shaded
+     bottom one so the plate has a top and a bottom; then a hard-edged offset
+     shadow, which is not a blur but the SIDE of the plate — that is what
+     gives it thickness; then two soft shadows at different distances, a near
+     one for contact and a far one for the ambient. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    7px 9px 0 -3px rgba(9, 18, 16, 0.72),
+    0 26px 40px -22px rgba(0, 0, 0, 0.55),
+    0 60px 90px -58px rgba(0, 0, 0, 0.95);
+  padding: clamp(22px, 2.6vw, 40px);
+  transition: box-shadow 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-stage,
+  .cf-wrap:hover .cf-stage,
+  .cf-stage:focus-within {
+    transform: none;
+    transition: none;
+  }
+}
+
+.cf-form { display: grid; gap: clamp(18px, 2.4vh, 26px); }
+.cf-row { display: grid; gap: clamp(18px, 2.4vh, 26px); }
+@media (min-width: 30rem) {
+  .cf-row { grid-template-columns: 1fr 1fr; }
+}
+
+.cf-field { display: grid; gap: 7px; min-width: 0; }
+.cf-field label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-paper-0);
+  opacity: 0.95;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+.cf-opt {
+  margin-left: 8px;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--color-paper-0);
+  opacity: 0.55;
+}
+
+/* ---------- ruled fields, not boxes ---------- */
+.cf-field input,
+.cf-field select,
+.cf-field textarea {
+  width: 100%;
+  min-width: 0;
+  color-scheme: dark;
+  appearance: none;
+  border: 0;
+  border-bottom: 1px solid var(--color-ink-400);
+  border-radius: 0;
+  background: transparent;
+  padding: 9px 0 11px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-paper-0);
+  -webkit-font-smoothing: antialiased;
+  transition: border-color 0.3s ease;
+}
+/* a hairline of light under the rule — the field reads as cut into the plate
+   rather than drawn on top of it */
+.cf-field input,
+.cf-field textarea,
+.cf-field select { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05); }
+.cf-field textarea { resize: vertical; min-height: 46px; }
+.cf-field select {
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-paper-0) 50%),
+    linear-gradient(135deg, var(--color-paper-0) 50%, transparent 50%);
+  background-position: calc(100% - 9px) calc(50% + 1px), calc(100% - 4px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 26px;
+  cursor: pointer;
+}
+.cf-field ::placeholder { color: var(--color-paper-0); opacity: 0.5; }
+.cf-field input:hover,
+.cf-field select:hover,
+.cf-field textarea:hover { border-bottom-color: var(--color-ink-200); }
+
+/* The rule thickens to teal on focus and the label lifts to mint, so the
+   active field is marked twice over — never by colour alone. */
+.cf-field input:focus,
+.cf-field select:focus,
+.cf-field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--color-accent-teal);
+  box-shadow: 0 1px 0 0 var(--color-accent-teal);
+}
+.cf-field:focus-within label { color: var(--color-accent-mint); }
+/* keyboard users additionally get a real ring */
+.cf-field input:focus-visible,
+.cf-field select:focus-visible,
+.cf-field textarea:focus-visible {
+  outline: 2px solid var(--color-accent-teal);
+  outline-offset: 5px;
+}
+.cf-field [aria-invalid="true"] { border-bottom-color: #e0a05f; }
+
+/* Chrome paints autofill white on white otherwise — an invisible field on
+   this ground. An inset shadow is the only override it honours. */
+.cf-field input:-webkit-autofill,
+.cf-field input:-webkit-autofill:hover,
+.cf-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-paper-0);
+  box-shadow: 0 0 0 1000px var(--color-ink-900) inset, 0 1px 0 0 var(--color-ink-400);
+  caret-color: var(--color-paper-0);
+}
+
+.cf-code {
+  font-family: var(--font-mono) !important;
+  font-size: 1.6rem !important;
+  letter-spacing: 0.44em;
+  padding: 10px 0 12px !important;
+}
+
+/* ---------- messages ---------- */
+.cf-err,
+.cf-alert,
+.cf-notice,
+.cf-fine {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+/* amber, not red: the section owns no red, and amber reads as "look again"
+   rather than "something broke" */
+.cf-err { color: #f5cfa0; }
+.cf-alert {
+  color: #f5cfa0;
+  border-left: 2px solid #e0a05f;
+  padding: 9px 0 9px 13px;
+}
+.cf-notice {
+  color: var(--color-accent-mint);
+  border-left: 2px solid var(--color-accent-teal);
+  padding: 9px 0 9px 13px;
+}
+.cf-fine { color: var(--color-paper-0); opacity: 0.6; }
+.cf-fine a {
+  padding: 6px 0;
+  color: var(--color-paper-0);
+  opacity: 0.85;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cf-fine a:hover { color: var(--color-accent-mint); opacity: 1; }
+
+/* ---------- buttons: the section's own plate, at form scale ---------- */
+.cf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.cf-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 52px;
+  justify-self: start;
+  margin-top: clamp(4px, 1vh, 10px);
+  padding: 15px 30px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-paper-0);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink-950);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.cf-send span { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) {
+  .cf-send:hover:not(:disabled) { background: var(--color-accent-mint); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .cf-send:hover:not(:disabled) span { transform: translateX(6px); }
+}
+.cf-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.cf-send:focus-visible { outline: 2px solid var(--color-accent-teal); outline-offset: 4px; }
+
+.cf-ghost {
+  min-height: 44px;
+  padding: 11px 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-paper-0);
+  opacity: 0.7;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-color: var(--color-paper-0);
+  cursor: pointer;
+  transition: opacity 0.25s ease, color 0.25s ease;
+}
+@media (hover: hover) {
+  .cf-ghost:hover:not(:disabled) {
+    color: var(--color-accent-mint);
+    opacity: 1;
+  }
+}
+.cf-ghost:disabled { opacity: 0.45; cursor: not-allowed; text-decoration: none; }
+.cf-ghost:focus-visible { outline: 2px solid var(--color-accent-teal); outline-offset: 3px; }
+
+/* ---------- step 2 and the confirmation ---------- */
+.cf-step {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-mint);
+}
+.cf-step:focus-visible { outline: 2px solid var(--color-accent-teal); outline-offset: 4px; }
+.cf-vh {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.6rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--color-paper-0);
+}
+.cf-sub {
+  margin: 12px 0 0;
+  max-width: 44ch;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-paper-0);
+  opacity: 0.75;
+}
+.cf-sub strong { color: var(--color-paper-0); opacity: 1; font-weight: 600; }
+.cf-alt { margin: 18px 0 0; font-size: 0.875rem; color: var(--color-paper-0); opacity: 0.65; }
+.cf-alt a {
+  padding: 6px 0;
+  color: var(--color-accent-mint);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.cf-verify { gap: clamp(14px, 2vh, 20px); }
+.cf-done { display: block; }
+.cf-tick {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+  color: var(--color-paper-0);
+}
+.cf-tick svg { width: 22px; height: 22px; }
+
+/* =========================================================
+   CONTACT SECTION
+   Ground + technical graphics for the closing dark section.
+   Kept here (not as utilities) because these are layered
+   gradients, a masked hairline grid and a stroke-dash draw —
+   none of which map onto Tailwind's scale. Every colour still
+   resolves from the @theme tokens above.
+   ========================================================= */
+
+/* Brand glow. Deliberately NOT the Work gallery's radial: that one is
+   centred and symmetrical, this one is pushed off to the upper right so
+   the section reads as a different room in the same building. */
+.contact-ground {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 88% 8%, rgba(48, 166, 150, 0.15) 0%, rgba(48, 166, 150, 0) 62%),
+    radial-gradient(92% 72% at 6% 98%, rgba(12, 23, 21, 0.62) 0%, rgba(12, 23, 21, 0) 70%);
+}
+
+/* The hairline coordinate grid was removed on the client's note that it
+   read as gridding rather than atmosphere. The glow below is what carries
+   the ground now, re-aimed for the lighter ink-900 the section sits on. */
+
+/* The routing motif draws itself once its block is revealed. Every path
+   carries pathLength="1", so one dash pair works regardless of the real
+   geometry — no re-tuning if the motif is ever redrawn. */
+.contact-trace path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.contact-trace circle {
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-out-expo) 1.1s;
+}
+.contact-trace.is-in path {
+  animation: contact-trace-draw 2s var(--ease-out-expo) forwards;
+}
+.contact-trace.is-in path.trace-branch {
+  animation-duration: 1.8s;
+  animation-delay: 0.5s;
+}
+.contact-trace.is-in circle {
+  opacity: 1;
+}
+
+@keyframes contact-trace-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-trace path {
+    stroke-dashoffset: 0;
+    animation: none !important;
+  }
+  .contact-trace circle {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+
+/* =========================================================
+   CHAT WIDGET
+   Launcher, panel geometry and the conversation's micro-motion.
+   These sit here rather than as utilities because they are
+   keyframes, viewport-dependent boxes and stagger delays; all
+   colour still comes from the @theme tokens above.
+
+   Step 14 polish pass. The governing idea: this is an OXVID
+   component that happens to be a chat, not a chat widget with
+   OXVID colours on it. So — no bouncing, no pulsing badge, no
+   "we're online" dot, no cartoon avatar. Motion is short, eased
+   the same way the rest of the site is eased, and every piece of
+   it is off under prefers-reduced-motion.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   PANEL
+   `visibility` is transitioned (not just opacity) so a closed
+   panel is genuinely out of the tab order — opacity:0 alone
+   leaves every control inside it focusable, which is how a
+   keyboard user ends up typing into an invisible form. The delay
+   keeps the fade-out visible.
+   --------------------------------------------------------- */
+.chat-panel {
+  inset: 0;
+  /* grows out of the launcher's corner rather than sliding in from
+     nowhere, so the two read as one object */
+  transform-origin: bottom right;
+  visibility: hidden;
+  will-change: transform, opacity;
+  transition:
+    opacity 240ms var(--ease-out-quart),
+    transform 320ms var(--ease-out-expo),
+    visibility 0s linear 320ms;
+}
+.chat-panel[data-open="true"] {
+  visibility: visible;
+  transition:
+    opacity 200ms var(--ease-out-quart),
+    transform 420ms var(--ease-out-expo),
+    visibility 0s;
+}
+
+/* A hairline of brand colour along the very top of the panel. One
+   accent, one pixel — enough to place it, not enough to shout. */
+.chat-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    var(--color-accent-teal) 0%,
+    var(--color-accent-mint) 45%,
+    var(--color-accent-teal-dark) 100%
+  );
+}
+
+/* Home-indicator clearance on the full-sheet layout. */
+.chat-composer {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/* The composer swaps between quick replies, a text field, the code
+   field and the review buttons. Crossfading that swap stops the
+   panel's whole bottom edge from snapping between heights. */
+.chat-composer-body {
+  animation: chat-swap 260ms var(--ease-out-expo) both;
+}
+
+@media (min-width: 40rem) {
+  .chat-panel {
+    inset: auto 1.5rem 1.5rem auto;
+    width: 24rem;
+    /* dvh, not vh: on mobile browsers vh includes the collapsing
+       address bar, so a vh-sized panel gets its own footer cut off. */
+    height: min(38rem, calc(100dvh - 3rem));
+    /* Client-requested (2026-08-28): a small radius. Kept at the token
+       scale rather than a large pill — the rest of the site is
+       near-flat, and a heavily rounded card would read as a
+       third-party widget dropped onto it. The mobile full sheet stays
+       square because it meets the screen edges. */
+    border-radius: var(--radius-md);
+    box-shadow:
+      0 32px 64px -24px rgba(12, 23, 21, 0.34),
+      0 2px 8px rgba(12, 23, 21, 0.06);
+  }
+}
+@media (min-width: 64rem) {
+  .chat-panel {
+    inset: auto 2.5rem 2.5rem auto;
+  }
+}
+
+/* ---------------------------------------------------------
+   LAUNCHER
+   --------------------------------------------------------- */
+/* One slow breathing ring. Deliberately not a bounce or a nudge —
+   the site's motion language is calm, and a launcher that jumps
+   reads as an ad. */
+.chat-launcher-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--color-accent-mint);
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  animation: chat-breathe 4.5s var(--ease-out-expo) infinite;
+}
+
+@keyframes chat-breathe {
+  0% { transform: scale(1); opacity: 0.5; }
+  70% { transform: scale(1.22); opacity: 0; }
+  100% { transform: scale(1.22); opacity: 0; }
+}
+
+/* The breathing ring is a desktop nicety. On a phone it is a permanently
+   running compositor animation on a control that is already the only
+   floating thing on screen. (This override has to sit AFTER the rule it
+   overrides: a media query adds no specificity, so an earlier block loses
+   to a later one — which is exactly how the first attempt at this silently
+   did nothing.) */
+@media (max-width: 63.999rem) {
+  .chat-launcher-ring {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Stepping out of the way of the page. `data-tucked` is set while the
+   reader is scrolling down, and while any region marked
+   `data-chat-clear` is on screen — the Contact section, which already
+   carries every way to get in touch, and the pinned Work gallery, whose
+   own "view live site" button sat underneath this one at 320px for the
+   entire length of the pin. It slides down rather than vanishing, so it
+   never blinks. */
+.chat-launcher {
+  /* A floating control has to be hittable with a thumb. The compact
+     mobile form measured 68x42, two pixels under the 44px minimum. */
+  min-height: 44px;
+  transition:
+    transform 340ms var(--ease-out-expo),
+    opacity 240ms var(--ease-out-quart),
+    background-color var(--duration-base) ease;
+}
+.chat-launcher[data-tucked="true"] {
+  transform: translateY(150%);
+  opacity: 0;
+  pointer-events: none;
+}
+.chat-launcher:hover {
+  transform: translateY(-2px);
+}
+.chat-launcher[data-tucked="true"]:hover {
+  transform: translateY(150%);
+}
+
+/* ---------------------------------------------------------
+   MESSAGES
+   --------------------------------------------------------- */
+/* Short and small — a chat that animates like a hero section feels
+   slow to use, and this is a form people want to finish. */
+.chat-msg {
+  animation: chat-msg-in 320ms var(--ease-out-expo) both;
+}
+
+@keyframes chat-msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes chat-swap {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Typing: a travelling wave of opacity, not three bouncing balls.
+   Same information, without the toy. */
+.chat-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-ink-300);
+  animation: chat-dot 1.3s var(--ease-in-out-cubic) infinite;
+}
+.chat-dot:nth-child(2) { animation-delay: 0.16s; }
+.chat-dot:nth-child(3) { animation-delay: 0.32s; }
+
+@keyframes chat-dot {
+  0%, 65%, 100% { opacity: 0.25; transform: scale(0.86); }
+  30% { opacity: 1; transform: scale(1); background: var(--color-accent-teal); }
+}
+
+/* ---------------------------------------------------------
+   QUICK REPLIES
+   Staggered so the row assembles left to right instead of
+   appearing as a block. Capped at six because that is how many
+   options the flow has; a seventh would simply share the last
+   delay rather than lag behind everything.
+   --------------------------------------------------------- */
+.chat-chip {
+  animation: chat-chip-in 300ms var(--ease-out-expo) both;
+  transition:
+    border-color var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    transform var(--duration-fast) var(--ease-out-expo);
+}
+.chat-chip:nth-child(1) { animation-delay: 0ms; }
+.chat-chip:nth-child(2) { animation-delay: 40ms; }
+.chat-chip:nth-child(3) { animation-delay: 80ms; }
+.chat-chip:nth-child(4) { animation-delay: 120ms; }
+.chat-chip:nth-child(5) { animation-delay: 160ms; }
+.chat-chip:nth-child(n + 6) { animation-delay: 200ms; }
+.chat-chip:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes chat-chip-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------
+   INPUTS
+   --------------------------------------------------------- */
+.chat-field {
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease,
+    background-color var(--duration-fast) ease;
+}
+.chat-field:focus {
+  border-color: var(--color-accent-teal);
+  box-shadow: 0 0 0 3px rgba(48, 166, 150, 0.14);
+  outline: none;
+}
+
+/* Six digits in: the field says so before the button does. */
+.chat-code[data-filled="true"] {
+  border-color: var(--color-accent-teal);
+  background: rgba(48, 166, 150, 0.05);
+}
+
+/* A wrong code shakes the field once. Two shakes is a tantrum; one
+   is a correction. */
+.chat-shake {
+  animation: chat-shake 380ms var(--ease-in-out-cubic);
+}
+
+@keyframes chat-shake {
+  0%, 100% { transform: translateX(0); }
+  18% { transform: translateX(-5px); }
+  38% { transform: translateX(4px); }
+  58% { transform: translateX(-3px); }
+  78% { transform: translateX(2px); }
+}
+
+.chat-alert {
+  animation: chat-msg-in 240ms var(--ease-out-expo) both;
+}
+
+/* ---------------------------------------------------------
+   SUCCESS
+   The tick draws itself. It is the one moment in the whole
+   component that gets to be a flourish, because it is the one
+   moment the visitor is actually pleased about.
+   --------------------------------------------------------- */
+.chat-tick-badge {
+  animation: chat-pop 460ms var(--ease-spring) both;
+}
+.chat-tick-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: chat-tick-draw 420ms var(--ease-out-expo) 200ms forwards;
+}
+.chat-tick-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--radius-sm);
+  background: radial-gradient(circle, rgba(48, 166, 150, 0.35) 0%, transparent 70%);
+  animation: chat-glow 900ms var(--ease-out-quart) 200ms both;
+  pointer-events: none;
+}
+
+@keyframes chat-pop {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes chat-tick-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes chat-glow {
+  0% { opacity: 0; transform: scale(0.7); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* Progress segments fill left to right, which is the only place the
+   widget shows how much is left. */
+.chat-progress-seg {
+  transition:
+    background-color var(--duration-slow) var(--ease-out-expo),
+    transform var(--duration-slow) var(--ease-out-expo);
+  transform-origin: left center;
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+   Everything above is decoration on top of a form that works
+   without it. Off means off — not "faster".
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .chat-launcher-ring { animation: none; opacity: 0.35; transform: none; }
+  .chat-launcher:hover,
+  .chat-chip:hover { transform: none; }
+  .chat-msg,
+  .chat-chip,
+  .chat-alert,
+  .chat-composer-body,
+  .chat-tick-badge,
+  .chat-tick-glow { animation: none; }
+  .chat-shake { animation: none; }
+  .chat-dot { animation: none; opacity: 0.55; }
+  .chat-tick-path { stroke-dashoffset: 0; animation: none; }
+  .chat-panel,
+  .chat-launcher,
+  .chat-progress-seg { transition: opacity 1ms, visibility 0s; }
+  .chat-launcher[data-tucked="true"] { transform: none; }
+}
+
+/* ------------------------------------------------------------------
+   STEP 19 — Career Roadmap (the Experience section)
+
+   Structural CSS rather than utilities: the timelines need pseudo-element
+   rules, node rings and per-breakpoint connectors that read far better as one
+   block than as forty class names spread across the markup.
+
+   Vertical rhythm comes from the shared py-section-md / py-section-lg tokens
+   on the section itself, so this block starts and ends level with About,
+   Expertise and Work rather than inventing its own spacing.
+   ------------------------------------------------------------------ */
+
+.cr-frame {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(36px, 5vh, 56px);
+  max-width: 104rem;
+  margin: 0 auto;
+}
+@media (min-width: 90rem) {
+  /* Three rows, and the middle one is the point: the portrait and the
+     timeline share it, so "EXPERIENCE" starts level with the top of the
+     photograph instead of level with the section marker. It used to sit
+     ABOVE "Career Roadmap", because the portrait was nested inside the
+     heading block and the right column had nothing to align against. Stating
+     the rows makes the alignment structural — it holds at every width with no
+     offset to re-tune. */
+  .cr-frame {
+    grid-template-columns: minmax(280px, min(34%, 420px)) minmax(0, 1fr);
+    column-gap: clamp(40px, 4.2vw, 72px);
+    row-gap: clamp(30px, 4.4vh, 46px);
+    align-items: start;
+  }
+  .cr-title { grid-area: 1 / 1; }
+  .cr-shot { grid-area: 2 / 1; margin-top: 0; }
+  .cr-stage { grid-area: 2 / 2; }
+  .cr-tail { grid-area: 3 / 1 / auto / -1; margin-top: clamp(10px, 2vh, 26px); }
+}
+
+/* Core Skills and the figures bar run under BOTH columns. Kept inside the
+   right-hand stage they left a 579px column of empty paper below the portrait
+   — the same lopsidedness that sank the previous design, mirrored — and gave
+   eleven skills only 769px to sit in. Across the frame the two columns end
+   within ~224px of each other and every skill holds one line. */
+.cr-tail {
+  display: grid;
+  align-content: start;
+  gap: clamp(30px, 4vh, 46px);
+  min-width: 0;
+}
+@media (min-width: 90rem) {
+  .cr-tail { grid-column: 1 / -1; }
+}
+
+/* ---------- left: marker, heading, then the portrait ---------- */
+.cr-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-teal-dark);
+}
+.cr-kicker span {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--color-accent-teal-dark);
+}
+.cr-kicker i { font-style: normal; color: var(--color-ink-300); }
+
+.cr-h {
+  margin: 1rem 0 0;
+  font-size: var(--text-h2);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-ink-900);
+}
+.cr-h i { color: var(--color-accent-teal); font-style: normal; }
+.cr-lede {
+  margin: 0.9rem 0 0;
+  max-width: 30ch;
+  font-size: var(--text-small);
+  line-height: 1.6;
+  color: var(--color-ink-500);
+}
+
+/* The Hero's frame, reused: the same oversized top-left radius, the same soft
+   glow sitting behind it. One portrait file serves the whole site — the crop
+   this composition wants is object-position on that same image, so there is no
+   second copy of his photograph to keep in step. */
+.cr-shot {
+  position: relative;
+  width: 100%;
+  max-width: 22rem;
+}
+/* only while the frame is stacked; in the two-column layout the row gap does
+   this job, and a margin here would break the row alignment */
+@media (max-width: 89.99rem) { .cr-shot { margin: clamp(28px, 4vh, 40px) 0 0; } }
+@media (min-width: 90rem) { .cr-shot { max-width: none; } }
+.cr-glow {
+  position: absolute;
+  inset: 6%;
+  pointer-events: none;
+  opacity: 0.7;
+  background: radial-gradient(
+    circle,
+    rgba(48, 166, 150, 0.22) 0%,
+    rgba(48, 166, 150, 0.22) 30%,
+    transparent 72%
+  );
+}
+.cr-plate {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--color-ink-950);
+  border-radius: 110px var(--radius-md) var(--radius-md) var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+/* The source has about 7% of headroom above his hair, so the frame starts at
+   the very top of it and the zoom is anchored there too: scaling about
+   `50% 0%` can only ever push content down and outward, never lift the crown
+   of his head out of the frame. Every earlier value clipped the hair. */
+/* Taller frame in the two-column layout. The portrait is the only thing under
+   the title, so at 4:5 it stood 502px beside a ~770px stage; 2:3 closes most
+   of that. It is also a safer crop, not a riskier one — a taller frame shows
+   MORE of a full-length photograph, so the scale and origin tuned earlier to
+   stop the hair being cut still hold. Declared here, after the base rule,
+   because that is the only way it wins the cascade. */
+@media (min-width: 90rem) {
+  .cr-plate { aspect-ratio: 2 / 3; }
+}
+
+.cr-img {
+  object-fit: cover;
+  object-position: 50% 0%;
+  transform: scale(1.15);
+  transform-origin: 50% 0%;
+  filter: brightness(0.94) contrast(1.08) saturate(0.94);
+}
+.cr-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(128% 96% at 50% 34%, rgba(12, 23, 21, 0) 46%,
+      rgba(12, 23, 21, 0.42) 84%, rgba(12, 23, 21, 0.66) 100%),
+    linear-gradient(180deg, rgba(12, 23, 21, 0.24) 0%, rgba(12, 23, 21, 0) 30%,
+      rgba(12, 23, 21, 0.42) 82%, rgba(12, 23, 21, 0.78) 100%);
+}
+.cr-circuit {
+  position: absolute;
+  left: -6px;
+  bottom: -4px;
+  width: 72%;
+  height: auto;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.cr-circuit path { fill: none; stroke: var(--color-accent-teal); stroke-width: 1; stroke-opacity: 0.5; }
+.cr-circuit circle { fill: var(--color-accent-teal); fill-opacity: 0.55; }
+
+/* ---------- the stage ---------- */
+.cr-stage {
+  display: grid;
+  align-content: start;
+  gap: clamp(30px, 4vh, 46px);
+  min-width: 0;
+}
+.cr-chapter {
+  margin: 0 0 clamp(26px, 3.4vh, 38px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--color-ink-900);
+}
+.cr-chapter::after {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 2px;
+  margin-top: 11px;
+  background: var(--color-accent-teal);
+}
+.cr-divider { height: 1px; background: var(--color-paper-200); }
+
+/* ---------- the timelines ----------
+
+   These lay out against the space they ACTUALLY have, not the viewport. On
+   desktop a fixed nav takes 160px off the left and the stage is only ~73% of
+   what remains, so at a 1024px window this row had about 118px per column and
+   the captions collided — a viewport media query cannot see that. A container
+   query can. Education needs less room than Career because it has three stops
+   rather than five, so the two switch at different widths.
+
+   Default is the vertical form, which is also the fallback anywhere container
+   queries are unsupported: degraded, never broken.
+   ------------------------------------------------------------------ */
+.cr-job { --cr-node: 52px; }
+.cr-tl {
+  position: relative;
+  container-type: inline-size;
+  container-name: crtl;
+}
+.cr-rule { display: none; }
+.cr-rule::before,
+.cr-rule::after {
+  content: "";
+  position: absolute;
+  top: -2.5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-accent-teal);
+}
+.cr-rule::before { left: 0; }
+.cr-rule::after { right: 0; }
+
+.cr-stops {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(22px, 3vh, 30px) 0;
+}
+.cr-stop {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--cr-node) minmax(0, 1fr);
+  column-gap: 18px;
+  align-items: start;
+}
+/* stacked: thread the nodes vertically, or they float unconnected */
+.cr-stop:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--cr-node) / 2);
+  top: var(--cr-node);
+  bottom: calc(-1 * clamp(22px, 3vh, 30px));
+  width: 1px;
+  background: var(--color-accent-teal);
+  opacity: 0.28;
+}
+
+@container crtl (min-width: 34rem) {
+}
+
+@container crtl (min-width: 44rem) {
+  .cr-job .cr-rule { display: block; }
+  .cr-job .cr-stops { grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0; }
+  .cr-job .cr-stop {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    padding: 0 clamp(8px, 1vw, 16px);
+  }
+  .cr-job .cr-stop::before { display: none; }
+  .cr-job .cr-stop + .cr-stop::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: calc(var(--cr-node) + 20px);
+    bottom: 4px;
+    width: 1px;
+    background: var(--color-paper-200);
+  }
+  .cr-job .cr-txt { margin-top: clamp(16px, 2.2vh, 22px); }
+}
+
+.cr-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--cr-node) / 2);
+  height: 1px;
+  background: var(--color-accent-teal);
+  opacity: 0.34;
+}
+
+.cr-node {
+  position: relative;
+  z-index: 2;
+  width: var(--cr-node);
+  height: var(--cr-node);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  flex: none;
+}
+.cr-node svg {
+  width: calc(var(--cr-node) * 0.42);
+  height: calc(var(--cr-node) * 0.42);
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Each node is tinted from lib/journey.ts, so the palette is edited as data
+   rather than hunted through this file: --cr-chip is the disc, --cr-mark the
+   glyph. The 6px paper halo stays — it is what punches the node out of the
+   timeline thread running behind it. The hairline is mixed from the node's own
+   mark colour so a pale chip keeps a defined edge on paper without a grey ring
+   fighting the tint. */
+.cr-node {
+  background: var(--cr-chip, var(--color-paper-0));
+  color: var(--cr-mark, var(--color-ink-900));
+}
+.cr-job .cr-node {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--cr-mark, var(--color-ink-900)) 20%, transparent),
+    0 0 0 6px var(--color-paper-50),
+    0 8px 18px -10px color-mix(in srgb, var(--cr-mark, var(--color-ink-950)) 45%, transparent);
+}
+/* the current role is the one node that reads as filled rather than tinted */
+.cr-job .cr-now .cr-node {
+  box-shadow: 0 0 0 6px var(--color-paper-50), 0 0 0 8px rgba(48, 166, 150, 0.16),
+    0 10px 22px -12px rgba(48, 166, 150, 0.55);
+}
+
+.cr-txt { min-width: 0; }
+.cr-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.96rem, 0.9rem + 0.22vw, 1.06rem);
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  color: var(--color-ink-900);
+}
+.cr-org { margin: 8px 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--color-accent-teal); }
+.cr-when { margin: 6px 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--color-ink-400); }
+/* education leads with the year, in the accent; a role leads with the title */
+
+.cr-tag {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: 2px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent-teal-dark);
+  border: 1px solid rgba(48, 166, 150, 0.42);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+/* ---------- core skills ----------
+
+   Eleven items in three named families. The layout responds to the space this
+   column ACTUALLY has, not the viewport — same reason the timelines above use
+   a container query: the fixed nav takes 160px off the left, so a viewport
+   media query would put three columns here while the stage is still 590px wide
+   and break every skill onto four lines.
+
+   Two levels of ruled label would be one too many, so only the CORE SKILLS
+   chapter keeps the teal rule the other two chapters have; the family names
+   carry their colour in the type itself and the markers, and nothing here has
+   a border, a chip or a background. */
+.cr-skills { min-width: 0; margin-top: clamp(12px, 2.6vh, 32px); }
+/* auto-fit rather than breakpoints: the longest skill measures 287px at this
+   size, so 19rem (304px) is the width at which no line wraps. The browser then
+   fits as many of those as the row actually has room for — three across the
+   full frame, two at a 1024px window, one on a phone — which is the same
+   question a container query would answer, asked in one line and answered
+   from the content rather than from a number I picked. */
+.cr-fams {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
+  gap: clamp(26px, 3.4vh, 36px) clamp(24px, 3vw, 56px);
+}
+.cr-fam { min-width: 0; }
+.cr-fam-h {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cr-mark, var(--color-ink-500));
+}
+.cr-fam-list {
+  margin: clamp(13px, 1.8vh, 17px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cr-fam-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-ink-700);
+}
+.cr-fam-list li + li { margin-top: 11px; }
+/* the marker sits on the middle of the first line's cap height, so it holds
+   its place when a long skill wraps to two lines */
+.cr-fam-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(0.75em - 2px);
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--cr-mark, var(--color-accent-teal));
+}
+
+/* the client's own three most AI/Claude-specific skills, called out with
+   a bolder weight + a filled ink-950 marker instead of a new label, so
+   nothing in the wording itself is touched — see CORE_STRENGTH_SKILLS in
+   lib/journey.ts */
+.cr-fam-list li.cr-fam-core {
+  font-weight: 600;
+  color: var(--color-ink-950);
+}
+.cr-fam-list li.cr-fam-core::before {
+  width: 6px;
+  height: 6px;
+  background: var(--color-accent-teal-dark);
+}
+.cr-fam-strength {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-accent-teal-dark);
+}
+
+/* ==========================================================================
+   HOW I BUILD — the AI-paired-development editorial section
+   ========================================================================== */
+/* a soft, top-right spotlight glow rather than a flat white section — the
+   "specially highlighted" treatment the client asked for, built the same
+   way the AI Agents CTA card's glow is (a radial color-mix tint, no new
+   asset), so it reads as part of the same visual system, not a one-off. */
+.hib-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    55% 60% at 88% 6%,
+    color-mix(in srgb, var(--color-accent-teal) 14%, transparent),
+    transparent 72%
+  );
+  pointer-events: none;
+}
+@media (max-width: 47.99rem) {
+  .hib-glow::before {
+    background: radial-gradient(
+      80% 40% at 50% 0%,
+      color-mix(in srgb, var(--color-accent-teal) 12%, transparent),
+      transparent 75%
+    );
+  }
+}
+
+/* ==========================================================================
+   WORK — "Completed Projects", the project deck
+   ==========================================================================
+
+   Built to the client's reference: the project's own screenshot full bleed,
+   a frosted detail card on the left, round arrows bottom-left, a timed bar
+   bottom-centre. The reference's palette (navy, cornflower blue, signal
+   green) is NOT used — this is the site's own ink / paper / mint / teal,
+   which is the same instruction the Journey icons follow.
+
+   Everything below the stage's own rules is positioned against the stage,
+   not the viewport, so the desktop composition holds at any window width
+   without the fixed nav's 160px bite skewing it.
+   ---------------------------------------------------------------------- */
+
+.pw {
+  position: relative;
+  background: var(--color-paper-50);
+  /* the fixed mobile bar is 64px tall; measured, the kicker was landing on
+     its bottom edge at a 390px viewport */
+  padding: clamp(84px, 10vh, 108px) clamp(16px, 3vw, 48px) clamp(56px, 7vh, 92px);
+}
+@media (min-width: 64rem) {
+  /* Two fixed things float over this section and neither can be argued with:
+     the brandmark occupies the viewport's top-left to about y=86, and the nav
+     pill sits at x=32-94. Measured, the first version's heading landed on top
+     of "Abdul Rehman / OXVID SYSTEMS". So the top padding clears the mark and
+     the left padding clears the pill; the right stays tight, because there is
+     nothing on that side to avoid. */
+  .pw {
+    padding: clamp(96px, 11vh, 128px) clamp(32px, 3vw, 48px) clamp(64px, 7vh, 96px)
+      clamp(112px, 8vw, 136px);
+  }
+}
+
+.pw-head { margin: 0 auto clamp(22px, 3vh, 34px); max-width: 104rem; }
+
+/* ---------- AI Agents & Automation (inside the Work section) ----------
+   Editorial rows — heading + how-it-works on the left, an interface
+   mockup on the right — not cards, per the client's own reference for
+   this layout. The mockups (agent-mockups.tsx) are hand-built HTML/CSS
+   standing in for a screenshot: every name/message/number in them is a
+   generic placeholder, never a real client's data (see the file's own
+   doc comment for why one can't honestly be shown here). */
+
+.agent-step-n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border: 1px solid var(--color-accent-teal);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-accent-teal-dark);
+  margin-top: 1px;
+}
+
+.agent-visual {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- pinned agent deck (scroll-driven, mirrors the Hero) ----------
+   Left visual: three copies of the same mockup, stacked in one CSS-grid
+   cell (grid-area 1/1) so they always share the front layer's natural
+   height. Back/mid are desaturated, scaled down and nudged off at an
+   angle to read as a shallow stack of screens rather than one flat
+   rectangle; the front layer is the real, legible mockup. Nothing here
+   is a second/third screenshot standing in for more proof — it is the
+   same honest mockup, shown receding for depth. */
+.agent-visual-stack {
+  position: relative;
+  display: grid;
+  width: 100%;
+  justify-items: center;
+}
+.agent-layer {
+  grid-area: 1 / 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* A big, faint solution number sitting behind the stack — a quiet
+   editorial marker (01, 02, 03...), not another card. Absolutely
+   positioned so it never participates in the stack's grid placement. */
+.agent-num-bg {
+  position: absolute;
+  top: clamp(-150px, -15vw, -80px);
+  left: -10px;
+  z-index: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(96px, 11vw, 176px);
+  line-height: 1;
+  color: var(--color-ink-100);
+  user-select: none;
+  pointer-events: none;
+}
+@media (max-width: 63.99rem) {
+  .agent-num-bg { display: none; }
+}
+.agent-layer-back {
+  /* Scaling down alone would recentre the card and cancel most of the
+     translate below (a smaller box shrinks back toward the middle from
+     every edge) — so the offset here is deliberately larger than it
+     looks like it should be, to still read as a card peeking out past
+     the front layer's bottom-left corner once that shrink is netted out. */
+  transform: rotate(-5deg) translate(-38px, 22px) scale(0.94);
+  filter: grayscale(0.6) opacity(0.55);
+  z-index: 1;
+  pointer-events: none;
+}
+.agent-layer-mid {
+  transform: rotate(3deg) translate(30px, -14px) scale(0.97);
+  filter: grayscale(0.3) opacity(0.8);
+  z-index: 2;
+  pointer-events: none;
+}
+.agent-layer-front {
+  position: relative;
+  z-index: 3;
+  transform: rotate(-0.6deg);
+  animation: agent-float 5.5s ease-in-out infinite;
+}
+@keyframes agent-float {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50% { transform: translateY(-6px) rotate(-0.6deg); }
+}
+@media (max-width: 63.99rem) {
+  .agent-layer-back,
+  .agent-layer-mid { display: none; }
+  .agent-layer-front { animation: none; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-layer-front { animation: none; }
+}
+
+/* Floating capability chips on the visual — three per agent (agent.stats),
+   qualitative claims only (Instant, 24/7, Automated...), never an invented
+   measurement. See the doc comment on AI_AGENTS in lib/ai-agents.ts. */
+.agent-stat {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--color-paper-0);
+  border: 1px solid var(--color-paper-300);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  color: var(--color-ink-700);
+  box-shadow: 0 18px 34px -22px rgba(12, 23, 21, 0.35);
+  white-space: nowrap;
+  animation: agent-stat-float 5s ease-in-out infinite;
+}
+.agent-stat b {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  color: var(--color-accent-teal-dark);
+  font-weight: 600;
+}
+/* Every mockup card has a fixed max-width (460/500/300px — see .agent-frame,
+   .agent-frame-wide, .agent-frame-phone) but sits inside the same fluid
+   visual column, which can render far wider than the card on a big screen.
+   A plain -10px/6%-style offset is measured against that column, so on a
+   wide viewport the chips end up floating well past the card's real edge.
+   Anchoring instead to the column's own center (50%) plus the card's own
+   fixed half-width keeps each chip a small, constant distance from the
+   card's actual edge no matter how wide the column itself renders.
+   --agent-frame-half is set per agent in AgentVisual (ai-agents.tsx). */
+.agent-stat-0 {
+  left: auto;
+  right: calc(50% + var(--agent-frame-half, 230px) + 10px);
+  top: 4%;
+  animation-delay: 0s;
+}
+.agent-stat-1 {
+  right: auto;
+  left: calc(50% + var(--agent-frame-half, 230px) + 10px);
+  bottom: 10%;
+  animation-delay: 0.7s;
+}
+.agent-stat-2 {
+  right: auto;
+  left: calc(50% + var(--agent-frame-half, 230px) + 10px);
+  top: 46%;
+  animation-delay: 1.3s;
+}
+@keyframes agent-stat-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@media (max-width: 63.99rem) {
+  .agent-stat { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-stat { animation: none; }
+}
+
+/* ---------- right-column content chrome ---------- */
+.agent-cat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.agent-cat-pill {
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  background: rgba(48, 166, 150, 0.12);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-teal-dark);
+}
+.agent-solution {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-400);
+}
+.agent-underline {
+  display: block;
+  width: 46px;
+  height: 2px;
+  background: var(--color-accent-teal);
+  margin: 14px 0 16px;
+}
+.agent-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.agent-meta-box {
+  border: 1px solid var(--color-paper-300);
+  border-radius: var(--radius-md);
+  background: var(--color-paper-0);
+  padding: 16px 14px 17px;
+}
+.agent-meta-icon {
+  display: inline-flex;
+  color: var(--color-accent-teal-dark);
+  margin-bottom: 8px;
+}
+.agent-meta-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-ink-400);
+  margin: 0;
+}
+.agent-meta-value {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-ink-900);
+}
+.agent-feature-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.agent-feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-accent-teal);
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  line-height: 1;
+  color: var(--color-ink-700);
+}
+.agent-feature-pill svg {
+  flex: none;
+  color: var(--color-accent-teal-dark);
+}
+
+/* ---------- section-closing CTA card ----------
+   The site's own final-CTA banner, matched to the client's chosen
+   reference (a light, centered "ready to start?" panel): everything —
+   eyebrow, headline, subtext, one button — sits in a single centered
+   column on a bright paper surface with a soft mint bloom behind the
+   copy, so it reads as a light, airy close rather than a dark slab.
+   Every color still comes from the existing paper/ink/mint tokens,
+   never a new one. */
+.agent-cta-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-paper-0);
+  border: 1px solid color-mix(in srgb, var(--color-ink-950) 8%, transparent);
+  box-shadow: 0 32px 70px -40px color-mix(in srgb, var(--color-ink-950) 30%, transparent);
+}
+.agent-cta-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    65% 85% at 50% 100%,
+    color-mix(in srgb, var(--color-accent-teal) 26%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+@media (max-width: 47.99rem) {
+  .agent-cta-card::before {
+    background: radial-gradient(
+      90% 60% at 50% 100%,
+      color-mix(in srgb, var(--color-accent-teal) 22%, transparent),
+      transparent 72%
+    );
+  }
+}
+
+.agent-rail {
+  position: absolute;
+  right: clamp(14px, 3vw, 40px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 5;
+}
+@media (min-width: 64rem) {
+  .agent-rail { display: flex; }
+}
+.agent-rail-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-paper-300);
+  transition: height 0.3s ease, background-color 0.3s ease;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+.agent-rail-dot.is-active {
+  height: 22px;
+  background: var(--color-accent-teal);
+}
+.agent-rail-dot:hover:not(.is-active) { background: var(--color-ink-200); }
+
+/* ---------- shared device frame ---------- */
+.agent-frame {
+  width: 100%;
+  max-width: 460px;
+  background: color-mix(in srgb, var(--color-paper-0) 88%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--color-paper-300);
+  border-radius: 10px;
+  box-shadow: 0 30px 60px -36px rgba(12, 23, 21, 0.28);
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+.agent-frame-panel,
+.agent-frame-widget {
+  padding: 20px;
+}
+
+/* browser-window chrome, used only for the Lead Capture form — this one
+   genuinely lives on the website, so a browser frame is the honest shape */
+.agent-frame-chrome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: var(--color-paper-100);
+  border-bottom: 1px solid var(--color-paper-300);
+  border-radius: 9px 9px 0 0;
+}
+.agent-frame-chrome .agent-frame-url {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-400);
+}
+/* The floating toast below deliberately hangs past the card's own bottom
+   edge, so this variant opts out of the frame's default clipping instead
+   of the toast getting cut off at the boundary. */
+.agent-frame-browser {
+  overflow: visible;
+}
+.agent-frame-browser .agent-frame-body {
+  position: relative;
+  padding: 22px;
+  border-radius: 0 0 9px 9px;
+}
+
+/* A little more width for the dashboard-chrome mockups (browser bar +
+   sidebar) so the sidebar doesn't crowd content tuned for the plainer
+   frame's full 460px. */
+.agent-frame-wide { max-width: 500px; }
+
+.agent-frame-dash {
+  display: flex;
+  min-height: 0;
+}
+.agent-frame-dash-nav {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 44px;
+  padding: 18px 0;
+  background: var(--color-paper-100);
+  border-right: 1px solid var(--color-paper-300);
+  border-radius: 0 0 0 9px;
+}
+.agent-frame-dash-nav span {
+  display: flex;
+  color: var(--color-ink-300);
+}
+.agent-frame-dash-nav span.is-active { color: var(--color-accent-teal-dark); }
+.agent-frame-dash-body {
+  flex: 1;
+  min-width: 0;
+  padding: 20px;
+  background: var(--color-paper-0);
+  border-radius: 0 0 9px 0;
+}
+
+.am-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.am-gauge span {
+  font-size: 10.5px;
+  color: var(--color-ink-400);
+  text-align: center;
+}
+.am-kpis-gauge { align-items: center; }
+
+/* ---------- generic bits reused across mockups ---------- */
+.am-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-accent-teal);
+  color: var(--color-paper-0);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.am-avatar-sm { width: 28px; height: 28px; font-size: 10px; }
+.am-avatar-wa { background: #25b661; }
+
+.am-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  padding: 4px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.am-tag-hot { background: rgba(224, 100, 92, 0.14); color: #c24a3f; }
+.am-tag-paid { background: rgba(48, 166, 150, 0.14); color: var(--color-accent-teal-dark); }
+
+/* ---------- Lead Capture: form + toast ---------- */
+.am-form-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-ink-900);
+  margin: 0 0 14px;
+}
+.am-field { margin-bottom: 12px; }
+.am-field span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-400);
+  margin-bottom: 5px;
+}
+.am-input {
+  border: 1px solid var(--color-paper-300);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  color: var(--color-ink-800);
+  background: var(--color-paper-50);
+}
+.am-input-tall { min-height: 40px; }
+.am-submit {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 18px;
+  background: var(--color-ink-900);
+  color: var(--color-paper-0);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  border-radius: 4px;
+}
+.am-toast {
+  position: absolute;
+  right: 16px;
+  bottom: -14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 240px;
+  background: var(--color-ink-900);
+  color: var(--color-paper-0);
+  padding: 12px 14px;
+  border-radius: 8px;
+  box-shadow: 0 18px 30px -16px rgba(12, 23, 21, 0.5);
+}
+.am-toast.am-toast-static { position: static; margin-top: 16px; max-width: none; }
+.am-toast-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-accent-mint);
+  color: var(--color-ink-950);
+  font-size: 12px;
+}
+.am-toast-title { font-size: 12px; font-weight: 600; margin: 0; }
+.am-toast-sub { font-size: 10.5px; opacity: 0.7; margin: 2px 0 0; }
+
+/* ---------- Lead Qualification: CRM panel ---------- */
+.am-crm-head { display: flex; align-items: center; gap: 12px; }
+.am-crm-name { font-weight: 700; font-size: 14px; color: var(--color-ink-900); margin: 0; }
+.am-crm-sub { font-size: 11px; color: var(--color-ink-400); margin: 2px 0 0; }
+.am-crm-head .am-tag { margin-left: auto; }
+.am-crm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 18px 0;
+}
+.am-crm-cell {
+  border: 1px solid var(--color-paper-300);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.am-crm-cell span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-400);
+  margin-bottom: 4px;
+}
+.am-crm-cell strong { font-size: 11.5px; color: var(--color-ink-800); font-weight: 600; }
+.am-score-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--color-ink-500);
+  margin-bottom: 6px;
+}
+.am-score-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-paper-200);
+  overflow: hidden;
+}
+.am-score-fill { display: block; height: 100%; background: var(--color-accent-teal); }
+
+/* ---------- Customer Support: chat widget ---------- */
+.am-chat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.am-chat-name { font-weight: 700; font-size: 13px; color: var(--color-ink-900); margin: 0; }
+.am-chat-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--color-ink-400);
+  margin: 2px 0 0;
+}
+.am-bubble {
+  max-width: 82%;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+.am-bubble-in { background: var(--color-paper-100); color: var(--color-ink-800); border-bottom-left-radius: 3px; }
+.am-bubble-out {
+  background: var(--color-accent-teal);
+  color: var(--color-paper-0);
+  margin-left: auto;
+  border-bottom-right-radius: 3px;
+}
+.am-typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--color-paper-100);
+  border-radius: 12px;
+  border-bottom-left-radius: 3px;
+  width: fit-content;
+}
+.am-typing span {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-ink-300);
+  animation: am-typing-bounce 1.1s ease-in-out infinite;
+}
+.am-typing span:nth-child(2) { animation-delay: 0.15s; }
+.am-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes am-typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
+/* ---------- Appointment Booking: calendar ---------- */
+.am-cal-head p {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-ink-900);
+  margin: 0 0 12px;
+}
+.am-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.am-cal-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  font-size: 10.5px;
+  color: var(--color-ink-500);
+}
+.am-cal-active { background: var(--color-accent-teal); color: var(--color-paper-0); font-weight: 700; }
+.am-slots { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+.am-slot {
+  border: 1px solid var(--color-paper-300);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-ink-500);
+}
+.am-slot-taken { color: var(--color-ink-300); text-decoration: line-through; }
+.am-slot-selected {
+  background: var(--color-ink-900);
+  border-color: var(--color-ink-900);
+  color: var(--color-paper-0);
+}
+
+/* ---------- WhatsApp AI Agent: phone frame ---------- */
+.agent-frame-phone {
+  max-width: 300px;
+  background: #e9ded2;
+  border-radius: 26px;
+  border: 8px solid var(--color-ink-950);
+}
+.am-wa-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #1f2c27;
+  color: var(--color-paper-0);
+  border-radius: 18px 18px 0 0;
+}
+.am-wa-name { font-weight: 700; font-size: 12.5px; margin: 0; }
+.am-wa-status { font-size: 10px; opacity: 0.65; margin: 1px 0 0; }
+.am-wa-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 280px;
+}
+.am-wa-bubble {
+  position: relative;
+  max-width: 84%;
+  padding: 8px 10px 16px;
+  border-radius: 9px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+.am-wa-in { background: var(--color-paper-0); color: var(--color-ink-800); }
+.am-wa-out { background: #d9fdd3; color: var(--color-ink-900); margin-left: auto; }
+.am-wa-time {
+  position: absolute;
+  right: 10px;
+  bottom: 4px;
+  font-size: 8.5px;
+  color: var(--color-ink-400);
+}
+
+/* ---------- Follow-Up: timeline ---------- */
+.am-timeline { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; position: relative; }
+.am-timeline-row { display: flex; align-items: flex-start; gap: 12px; }
+.am-timeline-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--color-paper-300);
+}
+.am-timeline-done { background: var(--color-accent-teal); }
+.am-timeline-d {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-400);
+  margin: 0;
+}
+.am-timeline-t { font-size: 12.5px; color: var(--color-ink-800); margin: 2px 0 0; }
+
+/* ---------- Quote & Invoice ---------- */
+.am-inv-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.am-inv-num { font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--color-ink-900); margin: 0; }
+.am-inv-sub { font-size: 10.5px; color: var(--color-ink-400); margin: 3px 0 0; }
+.am-inv-lines { margin: 18px 0; border-top: 1px dashed var(--color-paper-300); }
+.am-inv-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--color-paper-300);
+  font-size: 12px;
+  color: var(--color-ink-600);
+}
+.am-inv-line strong { color: var(--color-ink-900); font-weight: 600; }
+.am-inv-total { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--color-ink-900); font-weight: 700; }
+
+/* ---------- Business Reporting: dashboard ---------- */
+.am-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+.am-kpi {
+  border: 1px solid var(--color-paper-300);
+  border-radius: 6px;
+  padding: 10px;
+}
+.am-kpi span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-400);
+  margin-bottom: 6px;
+}
+.am-kpi strong { font-size: 16px; color: var(--color-ink-900); font-weight: 700; }
+.am-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 84px;
+  padding-top: 8px;
+}
+.am-chart span {
+  flex: 1;
+  background: var(--color-accent-teal);
+  border-radius: 3px 3px 0 0;
+  opacity: 0.85;
+}
+.am-chart span:last-child { background: var(--color-accent-teal-dark); opacity: 1; }
+
+.pw-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-teal-dark);
+}
+.pw-kicker span {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--color-accent-teal-dark);
+}
+.pw-kicker i { font-style: normal; opacity: 0.5; }
+.pw-h2 {
+  margin: 10px 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+  letter-spacing: -0.03em;
+  color: var(--color-ink-900);
+}
+
+/* ---------- the stage ---------- */
+.pw-stage {
+  position: relative;
+  max-width: 104rem;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--color-paper-200);
+  outline: none;
+}
+.pw-stage:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-paper-50), 0 0 0 4px var(--color-accent-teal);
+}
+@media (min-width: 78rem) {
+  /* Height, not aspect-ratio. With `aspect-ratio: 3/2` and a max-height, the
+     browser holds the RATIO and shrinks the width instead — measured, the
+     stage came out 1134px inside a 1325px row, floating in the middle with
+     the heading left-aligned somewhere else entirely. Stating the height
+     leaves the width alone. The value is what remains of the window once the
+     heading and the section's own padding are paid for, so the arrows and the
+     bar are on screen with the deck rather than below the fold. */
+  /* The 880px ceiling was 6px taller than the shortest capture in
+     lib/projects.ts (Vivid Dental and Jackson Family Dental are 874px), so
+     cover-fit enlarged those two by 0.7% on a 1080px screen. Imperceptible,
+     but "do not blur any image" is the instruction, and 864 costs nothing.
+     If a shorter capture is ever added, lower this to match it. */
+  .pw-stage { height: clamp(520px, calc(100vh - 240px), 740px); }
+}
+
+/* ---------- the screenshot ---------- */
+.pw-shot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pw-shot.pw-on { opacity: 1; }
+.pw-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0%;
+}
+@media (min-width: 78rem) {
+  /* a slow drift, so a still screenshot is not a dead rectangle */
+  .pw-shot.pw-on .pw-img { animation: pw-drift 14s ease-out forwards; }
+}
+@keyframes pw-drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.03); }
+}
+
+/* Left-heavy, so the card has something to sit on and the right-hand side
+   of the screenshot stays readable as the work it is. */
+.pw-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+      99deg,
+      rgba(12, 23, 21, 0.93) 0%,
+      rgba(12, 23, 21, 0.86) 26%,
+      rgba(12, 23, 21, 0.44) 44%,
+      rgba(12, 23, 21, 0.08) 58%,
+      rgba(12, 23, 21, 0) 72%
+    ),
+    linear-gradient(to top, rgba(12, 23, 21, 0.66) 0%, rgba(12, 23, 21, 0) 24%);
+  pointer-events: none;
+}
+
+/* ---------- sector pill, top right ---------- */
+.pw-pill {
+  position: absolute;
+  top: clamp(14px, 2vw, 30px);
+  right: clamp(14px, 2vw, 30px);
+  z-index: 3;
+  padding: 11px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Same material as the card — blur, saturate, see-through — but its own
+     tint, because it is the one control that sits in the CLEAR half of the
+     screenshot. Measured against all fourteen, the card's own glass gave the
+     white label 1.16:1 over Dreams NW's white hero: invisible. The tint is
+     carried in the glass rather than in a scrim so the image underneath still
+     shows through it. */
+  background: rgba(12, 23, 21, 0.26);
+  backdrop-filter: blur(30px) saturate(120%) brightness(0.55);
+  box-shadow: 0 18px 40px -30px rgba(0, 0, 0, 0.7);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-paper-0);
+  white-space: nowrap;
+}
+
+/* ---------- the detail card ---------- */
+.pw-card {
+  position: relative;
+  z-index: 3;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(34px) saturate(120%) brightness(0.82);
+  padding: clamp(22px, 2.2vw, 34px);
+  box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 0.7);
+  animation: pw-card-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Opacity only: the desktop rule below centres the card with its own
+   transform (translateY(-50%)), and animating `transform` here would
+   overwrite that on every slide change once the animation settles. */
+@keyframes pw-card-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (min-width: 78rem) {
+  .pw-card {
+    position: absolute;
+    left: clamp(30px, 5.2vw, 88px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(352px, 38vw, 524px);
+    /* leaves room for the arrows and the bar, which live in the same corner
+       region — measured against the real control block, not guessed */
+    max-height: calc(100% - clamp(108px, 13vh, 146px));
+    overflow: auto;
+    scrollbar-width: thin;
+  }
+}
+
+.pw-client {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent-mint);
+}
+.pw-lbl {
+  margin: clamp(12px, 1.6vh, 19px) 0 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.56);
+}
+.pw-title {
+  margin: 9px 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.16rem, 0.98rem + 0.68vw, 1.64rem);
+  line-height: 1.14;
+  letter-spacing: -0.028em;
+  color: var(--color-paper-0);
+}
+.pw-body {
+  margin: 8px 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.82);
+}
+.pw-chips {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pw-chips li {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.13);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-paper-0);
+}
+.pw-live {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 9px 0 0;
+  font-size: 0.9375rem;
+  color: var(--color-accent-mint);
+  word-break: break-all;
+}
+.pw-live svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+.pw-rule {
+  display: block;
+  height: 1px;
+  margin: clamp(17px, 2.2vh, 24px) 0 clamp(15px, 1.9vh, 20px);
+  background: rgba(255, 255, 255, 0.17);
+}
+.pw-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 15px 15px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-paper-0);
+  text-decoration: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.pw-cta-o {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.pw-cta-o svg { width: 15px; height: 15px; }
+@media (hover: hover) {
+  .pw-cta:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -16px rgba(0, 0, 0, 0.45);
+  }
+  .pw-cta:hover .pw-cta-o {
+    background: var(--color-accent-teal);
+    color: var(--color-ink-950);
+    transform: translateX(3px);
+  }
+}
+.pw-cta:focus-visible { outline: 2px solid var(--color-accent-teal); outline-offset: 3px; }
+
+/* ---------- arrows, bottom left ---------- */
+.pw-nav { display: flex; gap: 14px; }
+@media (min-width: 78rem) {
+  .pw-nav {
+    position: absolute;
+    z-index: 3;
+    left: clamp(30px, 5.2vw, 88px);
+    bottom: clamp(26px, 3.4vh, 40px);
+  }
+}
+.pw-nav button {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(34px) saturate(120%) brightness(0.82);
+  color: var(--color-paper-0);
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+.pw-nav svg { width: 19px; height: 19px; }
+.pw-flip { transform: rotate(180deg); }
+@media (hover: hover) {
+  .pw-nav button:hover {
+    background: var(--color-accent-teal);
+    border-color: var(--color-accent-teal);
+    color: var(--color-ink-950);
+  }
+}
+.pw-nav button:focus-visible { outline: 2px solid var(--color-accent-teal); outline-offset: 3px; }
+
+/* ---------- the time bar, bottom centre ---------- */
+.pw-bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.4vw, 20px);
+  padding: 13px clamp(16px, 1.6vw, 24px);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(34px) saturate(120%) brightness(0.82);
+}
+@media (min-width: 78rem) {
+  .pw-bar {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: clamp(26px, 3.4vh, 40px);
+    width: min(512px, 41%);
+  }
+}
+.pw-n {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--color-paper-0);
+  font-variant-numeric: tabular-nums;
+}
+.pw-track {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+.pw-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: 999px;
+  background: var(--color-accent-teal);
+  animation-play-state: var(--pw-play, paused);
+}
+@keyframes pw-fill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* Fourteen invisible jump targets laid over the track. The bar keeps the
+   reference's look exactly — one continuous fill, nothing segmented — while
+   every project stays one click and one tab-stop away. Each target is the
+   full height of the bar's padding box, so none is smaller than 24x24. */
+.pw-jump {
+  position: absolute;
+  inset: -18px 0;
+  display: flex;
+}
+.pw-jump button {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.pw-jump button:focus-visible {
+  outline: 2px solid var(--color-accent-teal);
+  outline-offset: -3px;
+  border-radius: 3px;
+}
+
+/* ---------- short windows ----------
+   A 1366x768 laptop is the case that breaks an overlay composition: the same
+   card that has 764px of room at 1920x1080 has 467px here, and measured, the
+   longest of the fourteen wanted 536px. Rather than clip it or scroll it, the
+   setting tightens — smaller heading, tighter leading, less padding — which
+   is what a designer does with less paper. Everything still fits on one
+   screen; nothing is hidden. */
+@media (min-width: 78rem) and (max-height: 860px) {
+  .pw { padding-top: clamp(80px, 10vh, 104px); padding-bottom: clamp(44px, 6vh, 64px); }
+  .pw-head { margin-bottom: clamp(14px, 2vh, 22px); }
+  .pw-h2 { font-size: clamp(1.45rem, 1.1rem + 1.1vw, 1.95rem); }
+  .pw-stage { height: calc(100vh - 168px); }
+  .pw-card { padding: 22px; max-height: calc(100% - 104px); }
+  .pw-title { font-size: clamp(1.1rem, 0.95rem + 0.5vw, 1.36rem); line-height: 1.12; }
+  .pw-lbl { margin-top: 11px; }
+  .pw-body { font-size: 0.875rem; line-height: 1.5; }
+  .pw-chips li { padding: 6px 11px; font-size: 0.78125rem; }
+  .pw-live { font-size: 0.875rem; }
+  .pw-rule { margin: 14px 0 12px; }
+  .pw-cta { padding: 12px 12px 12px 17px; font-size: 0.875rem; }
+  .pw-cta-o { width: 28px; height: 28px; }
+  .pw-nav button { width: 46px; height: 46px; }
+  .pw-bar { padding: 11px 20px; }
+}
+
+/* ---------- mobile: rebuilt, not shrunk ----------
+   The card is 592px tall by design; laid over a phone screen it would be the
+   whole screen. Below 64rem the stage stops being a canvas and becomes a
+   column — screenshot, then card, then the controls on one row — so nothing
+   overlaps and the screenshot is still shown at a size worth looking at. */
+@media (max-width: 77.99rem) {
+  .pw-stage {
+    display: grid;
+    background: transparent;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .pw-shot {
+    position: relative;
+    inset: auto;
+    grid-area: 1 / 1;
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .pw-shot:not(.pw-on) { display: none; }
+  .pw-scrim {
+    grid-area: 1 / 1;
+    inset: auto;
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+    background: linear-gradient(to top, rgba(12, 23, 21, 0.55) 0%, rgba(12, 23, 21, 0) 46%);
+  }
+  .pw-pill { position: absolute; top: 14px; right: 14px; padding: 9px 16px; font-size: 0.75rem; }
+
+  /* Below the image, the card, the arrows and the bar sit on the section's
+     own paper ground rather than over a screenshot — so the dark glass built
+     for the desktop overlay is swapped here for the site's ordinary light
+     surfaces, not a dark panel floating on a light page. */
+  .pw-card {
+    grid-area: 2 / 1;
+    margin-top: 14px;
+    border-color: var(--color-paper-300);
+    background: var(--color-paper-0);
+    box-shadow: 0 20px 44px -32px rgba(12, 23, 21, 0.2);
+  }
+  .pw-client { color: var(--color-accent-teal-dark); }
+  .pw-lbl { color: var(--color-ink-500); }
+  .pw-title { color: var(--color-ink-900); }
+  .pw-body { color: var(--color-ink-700); }
+  .pw-chips li {
+    border-color: var(--color-paper-300);
+    background: var(--color-paper-100);
+    color: var(--color-ink-900);
+  }
+  .pw-live { color: var(--color-accent-teal-dark); }
+  .pw-rule { background: var(--color-paper-300); }
+  .pw-cta {
+    border-color: var(--color-paper-300);
+    background: var(--color-paper-100);
+    color: var(--color-ink-900);
+  }
+  .pw-cta-o { border-color: var(--color-paper-400); color: var(--color-ink-900); }
+
+  .pw-nav { grid-area: 3 / 1; margin-top: 16px; justify-self: start; }
+  .pw-bar { grid-area: 3 / 1; margin-top: 16px; margin-left: 132px; }
+  .pw-nav button {
+    width: 48px;
+    height: 48px;
+    border-color: var(--color-paper-300);
+    background: var(--color-paper-0);
+    color: var(--color-ink-900);
+    box-shadow: 0 14px 30px -22px rgba(12, 23, 21, 0.22);
+  }
+  .pw-bar {
+    padding: 12px 16px;
+    border-color: var(--color-paper-300);
+    background: var(--color-paper-0);
+    box-shadow: 0 14px 30px -22px rgba(12, 23, 21, 0.22);
+  }
+  .pw-n { color: var(--color-ink-900); }
+  .pw-track { background: var(--color-paper-300); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-shot,
+  .pw-card,
+  .pw-fill,
+  .pw-shot.pw-on .pw-img { animation: none !important; transition: none !important; }
+}
+
+/* ---------- the figures ---------- */
+/* Not a solid slab: the dark sits at 88% over the paper, which softens it to a
+   deep charcoal and lets the page tint show through, with a hairline of light
+   along the top edge. Extra top margin so it reads as its own footnote to the
+   Experience run rather than the last row of it. */
+.cr-figs {
+  margin-top: clamp(14px, 2.6vh, 26px);
+  background: rgba(12, 23, 21, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 18px 40px -28px rgba(12, 23, 21, 0.55);
+  border-radius: 4px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: clamp(18px, 2.4vw, 26px) 0;
+}
+@media (min-width: 42.5rem) { .cr-figs { grid-template-columns: repeat(3, 1fr); } }
+/* four figures since education left the section — a five-column grid
+   would leave one cell of the dark bar empty */
+@media (min-width: 68.75rem) { .cr-figs { grid-template-columns: repeat(4, 1fr); } }
+.cr-fig {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 13px;
+  align-items: center;
+  padding: clamp(12px, 1.6vh, 15px) clamp(16px, 1.8vw, 24px);
+}
+.cr-fig + .cr-fig { box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08); }
+@media (max-width: 68.74rem) {
+  .cr-fig:nth-child(2n + 1) { box-shadow: none; }
+}
+@media (min-width: 42.5rem) and (max-width: 68.74rem) {
+  .cr-fig:nth-child(2n + 1) { box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08); }
+  .cr-fig:nth-child(3n + 1) { box-shadow: none; }
+}
+@media (min-width: 68.75rem) {
+  .cr-fig:nth-child(2n + 1),
+  .cr-fig:nth-child(3n + 1) { box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.08); }
+  .cr-fig:nth-child(4n + 1) { box-shadow: none; }
+}
+.cr-fig svg {
+  width: 21px;
+  height: 21px;
+  display: block;
+  fill: none;
+  /* brightened per figure in lib/journey.ts — the timeline's paper-weight
+     tints go grey against the ink bar, so these are their lifted cousins */
+  stroke: var(--cr-mark, var(--color-accent-teal));
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cr-fig b {
+  grid-column: 2;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 1.1rem + 0.5vw, 1.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.cr-fig span {
+  grid-column: 2;
+  margin-top: 5px;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--color-ink-300);
+}
+
+/* ---------- arrival ---------- */
+.cr-rv {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cr-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .cr-rv { opacity: 1; transform: none; transition: none; }
+}
+
+/* ==========================================================================
+   SIGNATURE INTRO — one-time on-load overlay (see signature-intro.tsx).
+   clip-path + opacity only: both are compositor-only properties, so this
+   costs the same regardless of device — no layout thrash, no JS per-frame
+   work driving it.
+   ========================================================================== */
+.signature-intro {
+  opacity: 1;
+  transition: opacity 450ms ease-in;
+}
+.signature-intro[data-phase="done"] {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Belt-and-braces: hides it at first paint via pure CSS, so a
+     reduced-motion user never sees even one frame of it before the
+     component's own effect confirms the preference and unmounts it. */
+  .signature-intro {
+    display: none;
+  }
+}
+.sig-bar {
+  width: min(220px, 55vw);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-paper-300);
+  overflow: hidden;
+}
+.sig-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--color-accent-teal-dark);
+  transition: width 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sig-bar-fill[data-phase="loading"] {
+  width: 78%;
+}
+.sig-bar-fill[data-phase="complete"],
+.sig-bar-fill[data-phase="done"] {
+  width: 100%;
+  transition: width 220ms ease-out;
+}
+.signature-intro .sig-text {
+  display: inline-block;
+  clip-path: inset(-60% 100% -60% 0);
+  animation: sig-reveal 900ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: 150ms;
+}
+.signature-intro .sig-kicker {
+  display: block;
+  opacity: 0;
+  animation: sig-kicker-in 400ms ease-out forwards;
+  animation-delay: 1050ms;
+}
+@keyframes sig-reveal {
+  /* Vertical insets are negative so the reveal can never clip the
+     signature font's ascenders/loops (a script face like this one draws
+     well above the normal em box) — only the horizontal edge sweeps. */
+  from { clip-path: inset(-60% 100% -60% 0); }
+  to { clip-path: inset(-60% 0 -60% 0); }
+}
+@keyframes sig-kicker-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sig-fade-out {
+  to { opacity: 0; }
+}
+
+/* ==========================================================================
+   CUSTOM CURSOR — desktop, fine-pointer only (see custom-cursor.tsx).
+   Native cursor is hidden ONLY once JS has confirmed a mouse + motion-OK
+   device via the .has-custom-cursor class; touch/coarse-pointer devices
+   and prefers-reduced-motion never get this class, so they keep the
+   normal system cursor untouched.
+   ========================================================================== */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none;
+}
+.custom-cursor-dot,
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 160ms ease-out;
+}
+.custom-cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-teal-dark);
+}
+.custom-cursor-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent-teal-dark);
+  transition: transform 140ms ease-out, width 160ms ease, height 160ms ease,
+    opacity 160ms ease-out, border-color 160ms ease, background-color 160ms ease;
+}
+.custom-cursor-ring.is-hover {
+  width: 52px;
+  height: 52px;
+  border-color: var(--color-accent-mint);
+  background: rgba(48, 166, 150, 0.08);
+}
+.custom-cursor-dot.is-hidden,
+.custom-cursor-ring.is-hidden {
+  opacity: 0;
+}
