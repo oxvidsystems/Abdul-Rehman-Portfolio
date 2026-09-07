@@ -2,7 +2,7 @@
 
 Abdul Rehman's personal portfolio website, built under his brand **OXVID Systems**. A premium, editorial, cinematic single-page experience showcasing 7 years of professional web development, automation, and brand/content work — with a built-in AI-style lead-generation chat widget.
 
-**Live site:** [oxvid-portfolio.vercel.app](https://oxvid-portfolio.vercel.app)
+**Live site:** [ab-rehman-portfolio.vercel.app](https://ab-rehman-portfolio.vercel.app)
 
 ## Tech Stack
 
