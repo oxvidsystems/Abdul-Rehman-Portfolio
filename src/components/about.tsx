@@ -90,7 +90,7 @@ function PortraitBeat() {
     >
       <div className="relative w-full max-w-[260px] overflow-hidden rounded-tl-[72px] rounded-tr-md rounded-br-md rounded-bl-md shadow-lg">
         <Image
-          src="/images/abdul-rehman-about.png"
+          src="/images/abdul-rehman-detail.jpg"
           alt="Abdul Rehman, founder of OXVID Systems — portrait detail"
           width={520}
           height={570}
