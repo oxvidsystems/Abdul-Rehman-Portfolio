@@ -1,0 +1,28 @@
+# Vercel CLI direct-deploy: only src/, public/ and the app's own config
+# files should ever be uploaded. Everything below is either a build
+# artifact, a dependency tree Vercel installs itself, or a loose
+# reference/deliverable file that lives alongside the app in this same
+# folder but isn't part of it.
+node_modules
+.next
+.npm-cache
+.git
+_to_delete
+Claude outputs
+Website Images
+*.mp4
+*.tar.gz
+*.tgz
+preview-*.html
+CLAUDE.md
+Portfolio Preject Instructions.txt
+Master Prompt For Claude.txt
+Oxvid System Desciption.jpeg
+OXVID Logo.jpeg
+OXVID Logo !.jpeg
+Abdul Rehman Image.jpeg
+Automation.jpeg
+Brand Identity.jpeg
+Content Writing.jpeg
+Web Development.jpeg
+New Image.png

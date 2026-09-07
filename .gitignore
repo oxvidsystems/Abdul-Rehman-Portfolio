@@ -38,3 +38,18 @@ next-env.d.ts
 
 # local dev mail catcher (contains live verification codes)
 .mail-outbox/
+
+.vercel
+
+# reference/briefing material and local scratch — not part of the deployed app
+/*.jpeg
+/Hero Image.png
+/New Image.png
+/*.mp4
+/_export.tar.gz
+/_export.tgz
+/_src.tar.gz
+/_to_delete/
+/Claude outputs/
+/Website Images/
+/preview-*.html
