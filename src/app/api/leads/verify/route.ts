@@ -1,16 +1,9 @@
 import { NextResponse } from "next/server";
-import { Timestamp } from "firebase-admin/firestore";
 import { fail, readHandle, readJsonBody } from "@/lib/leads/api-guards";
-import {
-  getDb,
-  isStoreConfigured,
-  LEADS_COLLECTION,
-  VERIFICATIONS_COLLECTION,
-} from "@/lib/leads/firestore";
+import { getClient, isStoreConfigured, mapLeadRow } from "@/lib/leads/store";
 import { sendMail } from "@/lib/leads/mailer";
 import { ownerNotification } from "@/lib/leads/notify";
 import { checkRateLimit, clientIp, requesterKey } from "@/lib/leads/rate-limit";
-import type { Lead } from "@/lib/leads/types";
 import { checkCode, VerificationSecretMissingError, type VerificationRecord } from "@/lib/leads/verification";
 
 /**
@@ -21,7 +14,8 @@ import { checkCode, VerificationSecretMissingError, type VerificationRecord } fr
  * inbox they claimed. That is what makes it ownership verification rather
  * than syntax checking.
  *
- * The read-check-write runs inside a Firestore transaction. Without one, two
+ * The read-check-write runs inside a Postgres transaction, with the
+ * verification row locked by `SELECT ... FOR UPDATE`. Without that lock, two
  * simultaneous guesses both read `attempts: 4`, both write `attempts: 5`,
  * and the limit silently becomes "5 per parallel request" instead of 5.
  *
@@ -32,6 +26,14 @@ import { checkCode, VerificationSecretMissingError, type VerificationRecord } fr
  */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+type Outcome =
+  | { kind: "gone" }
+  | { kind: "wrong"; attemptsLeft: number }
+  | { kind: "expired" }
+  | { kind: "consumed" }
+  | { kind: "locked" }
+  | { kind: "verified"; leadId: string };
 
 export async function POST(request: Request) {
   const parsed = await readJsonBody(request);
@@ -55,36 +57,65 @@ export async function POST(request: Request) {
   if (!verificationId) return fail(400, "malformed_body");
 
   try {
-    const db = getDb();
-    const ref = db.collection(VERIFICATIONS_COLLECTION).doc(verificationId);
+    const client = await getClient();
+    let outcome: Outcome;
 
-    const outcome = await db.runTransaction(async (tx) => {
-      const snap = await tx.get(ref);
-      if (!snap.exists) return { kind: "gone" as const };
+    try {
+      await client.query("BEGIN");
+      const { rows } = await client.query(
+        `SELECT lead_id, code_hash, expires_at, attempts, resends, last_sent_at, consumed_at
+           FROM verifications WHERE id = $1 FOR UPDATE`,
+        [verificationId]
+      );
 
-      const record = snap.data() as VerificationRecord;
-      const result = checkCode(verificationId, record, submitted);
+      if (rows.length === 0) {
+        await client.query("ROLLBACK");
+        outcome = { kind: "gone" };
+      } else {
+        const row = rows[0];
+        const record: VerificationRecord = {
+          leadId: row.lead_id,
+          codeHash: row.code_hash,
+          expiresAt: Number(row.expires_at),
+          attempts: row.attempts,
+          resends: row.resends,
+          lastSentAt: Number(row.last_sent_at),
+          consumedAt: row.consumed_at === null ? null : Number(row.consumed_at),
+        };
+        const result = checkCode(verificationId, record, submitted);
 
-      if (result.status === "wrong") {
-        tx.update(ref, { attempts: result.record.attempts });
-        return { kind: "wrong" as const, attemptsLeft: result.attemptsLeft };
+        if (result.status === "wrong") {
+          await client.query(`UPDATE verifications SET attempts = $1 WHERE id = $2`, [
+            result.record.attempts,
+            verificationId,
+          ]);
+          await client.query("COMMIT");
+          outcome = { kind: "wrong", attemptsLeft: result.attemptsLeft };
+        } else if (result.status !== "verified") {
+          await client.query("ROLLBACK");
+          outcome = { kind: result.status };
+        } else {
+          await client.query(
+            `UPDATE verifications SET attempts = $1, consumed_at = $2 WHERE id = $3`,
+            [result.record.attempts, result.record.consumedAt, verificationId]
+          );
+          await client.query(
+            `UPDATE leads
+               SET email_verified = true, verification_status = 'verified',
+                   qualified = true, verified_at = NOW()
+             WHERE id = $1`,
+            [record.leadId]
+          );
+          await client.query("COMMIT");
+          outcome = { kind: "verified", leadId: record.leadId };
+        }
       }
-      if (result.status !== "verified") return { kind: result.status };
-
-      tx.update(ref, {
-        attempts: result.record.attempts,
-        consumedAt: result.record.consumedAt,
-      });
-      tx.update(db.collection(LEADS_COLLECTION).doc(record.leadId), {
-        emailVerified: true,
-        verificationStatus: "verified",
-        // One boolean that a lead view can filter on without having to know
-        // the whole status vocabulary. Written here and nowhere else.
-        qualified: true,
-        verifiedAt: Timestamp.now(),
-      });
-      return { kind: "verified" as const, leadId: record.leadId };
-    });
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => {});
+      throw error;
+    } finally {
+      client.release();
+    }
 
     switch (outcome.kind) {
       case "verified":
@@ -106,7 +137,7 @@ export async function POST(request: Request) {
       case "consumed":
         return fail(409, "already_verified");
       default:
-        // Unknown id and deleted-by-TTL are the same answer on purpose.
+        // Unknown id and deleted-by-cleanup are the same answer on purpose.
         return fail(410, "code_expired");
     }
   } catch (error) {
@@ -128,20 +159,25 @@ export async function POST(request: Request) {
  */
 async function notifyOwner(leadId: string) {
   try {
-    const db = getDb();
-    const ref = db.collection(LEADS_COLLECTION).doc(leadId);
-    const snap = await ref.get();
-    const data = snap.data();
-    if (!data) return;
+    const client = await getClient();
+    let leadRow: Record<string, unknown> | undefined;
+    try {
+      const { rows } = await client.query(`SELECT * FROM leads WHERE id = $1`, [leadId]);
+      leadRow = rows[0];
+    } finally {
+      client.release();
+    }
+    if (!leadRow) return;
 
-    const lead: Lead = {
-      ...(data as Omit<Lead, "createdAt" | "verifiedAt">),
-      createdAt: data.createdAt?.toDate?.() ?? new Date(),
-      verifiedAt: data.verifiedAt?.toDate?.() ?? new Date(),
-    };
-
+    const lead = mapLeadRow(leadRow);
     await sendMail(ownerNotification(lead, leadId));
-    await ref.update({ ownerNotifiedAt: Timestamp.now() });
+
+    const client2 = await getClient();
+    try {
+      await client2.query(`UPDATE leads SET owner_notified_at = NOW() WHERE id = $1`, [leadId]);
+    } finally {
+      client2.release();
+    }
   } catch (error) {
     console.error("[leads] owner notification failed for", leadId, error);
   }
@@ -150,13 +186,20 @@ async function notifyOwner(leadId: string) {
 /** Reflect a dead verification on the lead so it reads honestly in the console. */
 async function markLead(verificationId: string, status: "expired" | "failed") {
   try {
-    const db = getDb();
-    const snap = await db.collection(VERIFICATIONS_COLLECTION).doc(verificationId).get();
-    const leadId = (snap.data() as VerificationRecord | undefined)?.leadId;
-    if (!leadId) return;
-    await db.collection(LEADS_COLLECTION).doc(leadId).update({
-      verificationStatus: status,
-    });
+    const client = await getClient();
+    try {
+      const { rows } = await client.query(`SELECT lead_id FROM verifications WHERE id = $1`, [
+        verificationId,
+      ]);
+      const leadId = rows[0]?.lead_id;
+      if (!leadId) return;
+      await client.query(`UPDATE leads SET verification_status = $1 WHERE id = $2`, [
+        status,
+        leadId,
+      ]);
+    } finally {
+      client.release();
+    }
   } catch (error) {
     console.error("[leads] could not mark lead status", error);
   }

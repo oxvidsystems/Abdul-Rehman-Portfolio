@@ -8,7 +8,7 @@ Abdul Rehman's personal portfolio website, built under his brand **OXVID Systems
 
 - **Framework:** Next.js 16 (App Router, TypeScript, Turbopack)
 - **Styling:** Tailwind CSS v4 (CSS-first `@theme` tokens in `src/app/globals.css`)
-- **Backend / data:** Firebase (Firestore + Admin SDK) for lead storage
+- **Backend / data:** Vercel Postgres for lead storage
 - **Deployment:** Vercel
 
 ## Getting Started
@@ -27,7 +27,7 @@ npm run build   # production build
 npm run start   # run the production build
 ```
 
-Copy `.env.example` to `.env.local` and fill in the required values (Firebase service account credentials, email/OTP provider keys, etc.) before running the lead-capture / chat-verification flow locally.
+Copy `.env.example` to `.env.local` and fill in the required values (email/OTP provider keys, etc.) before running the lead-capture / chat-verification flow locally. In production, connect Postgres to the Vercel project from the Storage tab — it injects its own connection string, nothing to copy in by hand.
 
 ## Project Structure
 

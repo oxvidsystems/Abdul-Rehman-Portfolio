@@ -1,4 +1,4 @@
-import { getDb, LEADS_COLLECTION } from "./firestore";
+import { getClient, mapLeadRow } from "./store";
 import type { Lead, VerificationStatus } from "./types";
 
 /**
@@ -20,57 +20,49 @@ import type { Lead, VerificationStatus } from "./types";
  *
  *   1. The notification email, which arrives at info@oxvidsystems.com the
  *      moment a lead verifies and contains every field.
- *   2. The Firestore console: Firestore → leads → filter `qualified == true`,
- *      sort by `verifiedAt` descending. That is exactly `listVerifiedLeads`.
+ *   2. The Vercel dashboard's Postgres "Query" tab — a lightweight SQL
+ *      editor built into Storage → the connected database. `SELECT * FROM
+ *      leads WHERE qualified = true ORDER BY verified_at DESC` is exactly
+ *      `listVerifiedLeads`.
  *
- * SERVER ONLY. These functions use the Admin SDK, which bypasses security
- * rules. Never import this into a client component, and never expose one of
- * these directly as an unauthenticated route.
+ * SERVER ONLY. These functions hold a direct database connection and must
+ * never be imported into a client component or exposed as an
+ * unauthenticated route.
  */
 
 function assertServer() {
   if (typeof window !== "undefined") {
     throw new Error(
-      "leads/query.ts was imported into client code. It reads every lead with admin privileges and must stay server-only."
+      "leads/query.ts was imported into client code. It reads every lead directly from the database and must stay server-only."
     );
   }
 }
 
 export type StoredLead = Lead & { id: string };
 
-type LeadDoc = Record<string, unknown> & {
-  createdAt?: { toDate(): Date };
-  verifiedAt?: { toDate(): Date };
-  ownerNotifiedAt?: { toDate(): Date };
-};
-
-function toLead(id: string, data: LeadDoc): StoredLead {
-  const { createdAt, verifiedAt, ownerNotifiedAt, ...rest } = data;
-  return {
-    id,
-    ...(rest as Omit<Lead, "createdAt">),
-    createdAt: createdAt?.toDate() ?? new Date(0),
-    ...(verifiedAt ? { verifiedAt: verifiedAt.toDate() } : {}),
-    ...(ownerNotifiedAt ? { ownerNotifiedAt: ownerNotifiedAt.toDate() } : {}),
-  };
+function toStoredLead(row: Record<string, unknown>): StoredLead {
+  return { id: row.id as string, ...mapLeadRow(row) };
 }
 
 /**
  * Qualified leads, newest verification first.
  *
- * Filters on `qualified` rather than `verificationStatus === "verified"`: the
+ * Filters on `qualified` rather than `verificationStatus = 'verified'`: the
  * boolean is only ever written by the verification transaction, so a pending
  * or failed lead cannot appear here even if the status vocabulary changes.
  */
 export async function listVerifiedLeads(limit = 50): Promise<StoredLead[]> {
   assertServer();
-  const snap = await getDb()
-    .collection(LEADS_COLLECTION)
-    .where("qualified", "==", true)
-    .orderBy("verifiedAt", "desc")
-    .limit(limit)
-    .get();
-  return snap.docs.map((d) => toLead(d.id, d.data() as LeadDoc));
+  const client = await getClient();
+  try {
+    const { rows } = await client.query(
+      `SELECT * FROM leads WHERE qualified = true ORDER BY verified_at DESC LIMIT $1`,
+      [limit]
+    );
+    return rows.map(toStoredLead);
+  } finally {
+    client.release();
+  }
 }
 
 /** Everything in one state — for triaging what never got verified. */
@@ -79,19 +71,27 @@ export async function listLeadsByStatus(
   limit = 50
 ): Promise<StoredLead[]> {
   assertServer();
-  const snap = await getDb()
-    .collection(LEADS_COLLECTION)
-    .where("verificationStatus", "==", status)
-    .orderBy("createdAt", "desc")
-    .limit(limit)
-    .get();
-  return snap.docs.map((d) => toLead(d.id, d.data() as LeadDoc));
+  const client = await getClient();
+  try {
+    const { rows } = await client.query(
+      `SELECT * FROM leads WHERE verification_status = $1 ORDER BY created_at DESC LIMIT $2`,
+      [status, limit]
+    );
+    return rows.map(toStoredLead);
+  } finally {
+    client.release();
+  }
 }
 
 export async function getLead(id: string): Promise<StoredLead | null> {
   assertServer();
-  const doc = await getDb().collection(LEADS_COLLECTION).doc(id).get();
-  return doc.exists ? toLead(doc.id, doc.data() as LeadDoc) : null;
+  const client = await getClient();
+  try {
+    const { rows } = await client.query(`SELECT * FROM leads WHERE id = $1`, [id]);
+    return rows[0] ? toStoredLead(rows[0]) : null;
+  } finally {
+    client.release();
+  }
 }
 
 /**

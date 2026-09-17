@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { getDb, RATE_LIMIT_COLLECTION } from "./firestore";
+import { getClient } from "./store";
 
 /**
  * STEP 11 — abuse protection for /api/leads.
@@ -11,21 +11,24 @@ import { getDb, RATE_LIMIT_COLLECTION } from "./firestore";
  *     as good as the instance's lifetime, and separate instances do not
  *     share it — which is precisely why it is not the only layer.
  *
- *  2. A DURABLE FIRESTORE WINDOW. A transaction on one counter document per
- *     requester, so the limit holds across instances, restarts and deploys.
- *     Costs one read and one write per accepted request; on a portfolio's
- *     traffic that is noise.
+ *  2. A DURABLE POSTGRES WINDOW. One row per requester, read with `FOR
+ *     UPDATE` inside a transaction so the limit holds across instances,
+ *     restarts and deploys, and two simultaneous requests cannot both read
+ *     the same count and both think they're the 5th.
  *
  * PRIVACY
- * The IP is never stored. The document id is a salted SHA-256 of it, so the
+ * The IP is never stored. The row's key is a salted SHA-256 of it, so the
  * counter can be found again without the address existing anywhere in the
  * database. The salt lives in the environment; without it the hash is still
  * a hash, just not peppered, and the code says so rather than pretending.
  *
  * CLEANUP
- * Every document carries `expiresAt`. Enable a Firestore TTL policy on
- * `rate_limits.expiresAt` and old counters delete themselves; without it
- * they simply accumulate, harmlessly but pointlessly.
+ * Rows carry `expires_at` but nothing deletes them automatically — Postgres
+ * has no Firestore-style TTL policy. They accumulate harmlessly (one row per
+ * distinct requester per 10-minute window); a scheduled `DELETE FROM
+ * rate_limits WHERE expires_at < NOW()` run occasionally (a Vercel Cron
+ * hitting a small maintenance route) keeps the table tidy, but nothing
+ * breaks if that's never added.
  */
 
 export const WINDOW_MS = 10 * 60_000;
@@ -44,10 +47,9 @@ function sweep(now: number) {
 
 /**
  * The client address, as reported by the proxy in front of this app. Only
- * meaningful when that proxy is trusted and overwrites the header —
- * Vercel, Cloud Run and Firebase Hosting all do. Behind an untrusted proxy
- * `x-forwarded-for` is attacker-controlled and this becomes a courtesy
- * limit, not a control.
+ * meaningful when that proxy is trusted and overwrites the header — Vercel
+ * does. Behind an untrusted proxy `x-forwarded-for` is attacker-controlled
+ * and this becomes a courtesy limit, not a control.
  */
 export function clientIp(headers: Headers): string {
   const forwarded = headers.get("x-forwarded-for");
@@ -88,31 +90,44 @@ function checkMemory(key: string, now: number): RateLimitVerdict {
   return { allowed: true, retryAfter: 0 };
 }
 
-async function checkFirestore(key: string, now: number): Promise<RateLimitVerdict> {
-  const ref = getDb().collection(RATE_LIMIT_COLLECTION).doc(key);
-  return getDb().runTransaction(async (tx) => {
-    const snap = await tx.get(ref);
-    const data = snap.data() as Bucket | undefined;
+async function checkPostgres(key: string, now: number): Promise<RateLimitVerdict> {
+  const client = await getClient();
+  try {
+    await client.query("BEGIN");
+    const { rows } = await client.query(
+      `SELECT count, window_start FROM rate_limits WHERE key = $1 FOR UPDATE`,
+      [key]
+    );
 
-    if (!data || now - data.windowStart > WINDOW_MS) {
-      tx.set(ref, {
-        count: 1,
-        windowStart: now,
-        expiresAt: new Date(now + WINDOW_MS),
-      });
+    if (rows.length === 0 || now - Number(rows[0].window_start) > WINDOW_MS) {
+      await client.query(
+        `INSERT INTO rate_limits (key, count, window_start, expires_at)
+         VALUES ($1, 1, $2, $3)
+         ON CONFLICT (key) DO UPDATE SET count = 1, window_start = $2, expires_at = $3`,
+        [key, now, new Date(now + WINDOW_MS)]
+      );
+      await client.query("COMMIT");
       return { allowed: true, retryAfter: 0 };
     }
 
+    const data = rows[0];
     if (data.count >= MAX_PER_WINDOW) {
+      await client.query("ROLLBACK");
       return {
         allowed: false,
-        retryAfter: Math.ceil((data.windowStart + WINDOW_MS - now) / 1000),
+        retryAfter: Math.ceil((Number(data.window_start) + WINDOW_MS - now) / 1000),
       };
     }
 
-    tx.update(ref, { count: data.count + 1 });
+    await client.query(`UPDATE rate_limits SET count = count + 1 WHERE key = $1`, [key]);
+    await client.query("COMMIT");
     return { allowed: true, retryAfter: 0 };
-  });
+  } catch (error) {
+    await client.query("ROLLBACK").catch(() => {});
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 export async function checkRateLimit(key: string): Promise<RateLimitVerdict> {
@@ -122,7 +137,7 @@ export async function checkRateLimit(key: string): Promise<RateLimitVerdict> {
   if (!fast.allowed) return fast;
 
   try {
-    return await checkFirestore(key, now);
+    return await checkPostgres(key, now);
   } catch (error) {
     // The durable layer being down must not become an open door, but it
     // must not lock out real visitors either. The in-memory verdict already

@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-import { Timestamp } from "firebase-admin/firestore";
 import { fail, readJsonBody } from "@/lib/leads/api-guards";
-import {
-  getDb,
-  isStoreConfigured,
-  LEADS_COLLECTION,
-  LeadStoreUnavailableError,
-  VERIFICATIONS_COLLECTION,
-} from "@/lib/leads/firestore";
+import { getClient, isStoreConfigured, LeadStoreUnavailableError, newId } from "@/lib/leads/store";
 import { isMailerConfigured, MailerUnavailableError, sendMail, verificationEmail } from "@/lib/leads/mailer";
 import { checkRateLimit, clientIp, requesterKey } from "@/lib/leads/rate-limit";
 import { validateLead } from "@/lib/leads/validate";
@@ -41,7 +34,7 @@ export async function POST(request: Request) {
   if (!parsed.ok) return parsed.response;
 
   if (!isStoreConfigured()) {
-    console.error("[leads] refused: Firebase credentials are not configured. See .env.example.");
+    console.error("[leads] refused: Postgres is not connected. Connect Storage → Postgres in the Vercel dashboard.");
     return fail(503, "storage_unavailable");
   }
   if (!isMailerConfigured()) {
@@ -72,31 +65,66 @@ export async function POST(request: Request) {
   }
 
   try {
-    const db = getDb();
-    const { createdAt, ...rest } = result.lead;
-    const leadRef = await db
-      .collection(LEADS_COLLECTION)
-      .add({ ...rest, createdAt: Timestamp.fromDate(createdAt) });
+    const client = await getClient();
+    try {
+      const { createdAt, ...rest } = result.lead;
+      const leadId = newId();
 
-    const { verificationId, code, record } = issueCode(leadRef.id);
-    await db.collection(VERIFICATIONS_COLLECTION).doc(verificationId).set({
-      ...record,
-      // Firestore TTL deletes the code material on its own. The lead stays.
-      expiresAtTs: Timestamp.fromMillis(record.expiresAt),
-    });
+      await client.query(
+        `INSERT INTO leads
+           (id, name, email, email_verified, phone, project_type, project_goal,
+            additional_message, source, page, referrer, project_interest, spam_signals,
+            created_at, verification_status)
+         VALUES ($1, $2, $3, false, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, 'pending')`,
+        [
+          leadId,
+          rest.name,
+          rest.email,
+          rest.phone,
+          rest.projectType,
+          rest.projectGoal,
+          rest.additionalMessage,
+          rest.source,
+          rest.page ?? null,
+          rest.referrer ?? null,
+          rest.projectInterest ?? null,
+          rest.spamSignals ? JSON.stringify(rest.spamSignals) : null,
+          createdAt,
+        ]
+      );
 
-    const mail = verificationEmail(code, result.lead.name.split(" ")[0] ?? "");
-    await sendMail({ ...mail, to: result.lead.email });
+      const { verificationId, code, record } = issueCode(leadId);
+      await client.query(
+        `INSERT INTO verifications
+           (id, lead_id, code_hash, expires_at, attempts, resends, last_sent_at, consumed_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          verificationId,
+          record.leadId,
+          record.codeHash,
+          record.expiresAt,
+          record.attempts,
+          record.resends,
+          record.lastSentAt,
+          record.consumedAt,
+        ]
+      );
 
-    return NextResponse.json(
-      {
-        ok: true,
-        verificationId,
-        email: result.lead.email,
-        expiresInMs: CODE_TTL_MS,
-      },
-      { status: 202 }
-    );
+      const mail = verificationEmail(code, result.lead.name.split(" ")[0] ?? "");
+      await sendMail({ ...mail, to: result.lead.email });
+
+      return NextResponse.json(
+        {
+          ok: true,
+          verificationId,
+          email: result.lead.email,
+          expiresInMs: CODE_TTL_MS,
+        },
+        { status: 202 }
+      );
+    } finally {
+      client.release();
+    }
   } catch (error) {
     if (error instanceof VerificationSecretMissingError) {
       console.error("[leads]", error.message);
@@ -110,7 +138,7 @@ export async function POST(request: Request) {
       console.error("[leads]", error.message);
       return fail(503, "storage_unavailable");
     }
-    // Never echo the underlying error: it can carry project ids and paths.
+    // Never echo the underlying error: it can carry connection strings and paths.
     console.error("[leads] start failed", error);
     return fail(500, "write_failed");
   }
