@@ -1,0 +1,1058 @@
+You are now building the final production-ready personal portfolio website for:
+
+ABdul Rehman
+7 Years of Experience
+Oxvid Systems
+
+This is NOT a basic portfolio website.
+
+Treat this as a premium digital experience / award-winning creative developer portfolio.
+
+You have already been given the complete project instructions. Follow those instructions as the source of truth.
+
+==================================================
+01 — FIRST: INSPECT EVERYTHING
+==================================================
+
+Before writing or modifying code:
+
+1. Inspect the entire project folder.
+2. Inspect all available images/assets.
+3. Locate Abdul Rehman's portrait.
+4. Locate the OXVID logo.
+5. Locate Abdul Rehman's signature if available.
+6. Inspect all reference images.
+7. Understand the visual language of the reference material.
+8. Inspect the existing codebase and determine whether it should be improved or rebuilt.
+9. Identify the current framework and existing dependencies.
+10. Reuse useful existing infrastructure where appropriate.
+
+DO NOT start by blindly generating a generic template.
+
+Understand the assets and visual identity first.
+
+==================================================
+02 — CREATIVE GOAL
+==================================================
+
+The final website should feel like:
+
+AWWWARDS / CSS DESIGN AWARDS / FWA inspired
++
+premium personal branding
++
+modern technology editorial design
++
+cinematic scrolling
++
+high-end frontend engineering
+
+The visitor should immediately feel:
+
+"This is not a template."
+
+"This person builds serious digital experiences."
+
+The website itself must demonstrate Abdul Rehman's design and development ability.
+
+==================================================
+03 — PRIMARY VISUAL DIRECTION
+==================================================
+
+IMPORTANT:
+
+THE WEBSITE IS LIGHT-THEME-FIRST.
+
+Do NOT make the entire website dark.
+
+Target approximately:
+
+80% LIGHT
+15% OXVID DARK
+5% GREEN / TEAL ACCENTS
+
+Main environment:
+
+WHITE
+OFF-WHITE
+VERY LIGHT GREY
+
+Primary typography:
+
+DARK CHARCOAL
+
+OXVID brand contrast:
+
+DARK CHARCOAL / GRAPHITE
+
+Accent:
+
+GREEN
+MINT
+TEAL
+CYAN
+
+Use the supplied OXVID logo to derive the exact visual relationship.
+
+The OXVID dark color is a BRAND COLOR.
+
+It is NOT the default website background.
+
+==================================================
+04 — VISUAL RHYTHM
+==================================================
+
+Create a cinematic rhythm between light and dark sections.
+
+Example:
+
+LIGHT HERO
+↓
+LIGHT ABOUT
+↓
+LIGHT EXPERIENCE
+↓
+DARK FEATURE MOMENT
+↓
+LIGHT SERVICES
+↓
+LIGHT PROJECTS
+↓
+DARK PROJECT TRANSITION
+↓
+LIGHT PROJECTS
+↓
+DARK CONTACT
+↓
+DARK FOOTER
+
+The transitions should feel intentional.
+
+Never make the entire site visually flat.
+
+==================================================
+05 — LEFT FIXED NAVIGATION
+==================================================
+
+Desktop must have a sophisticated fixed LEFT navigation.
+
+The left navigation should remain visually stable while the right content scrolls.
+
+Structure:
+
+ABDUL
+REHMAN
+
+01 HOME
+02 ABOUT
+03 EXPERTISE
+04 WORK
+05 EXPERIENCE
+06 CONTACT
+
+Include:
+
+- active section indicator
+- scroll progress
+- smooth transitions
+- subtle green/teal accent
+- elegant hover interaction
+
+The navigation should feel like part of an art-directed digital interface.
+
+It must NOT look like a normal navbar.
+
+On mobile, transform it into an elegant compact navigation system.
+
+==================================================
+06 — CORE LAYOUT PHILOSOPHY
+==================================================
+
+Use:
+
+STATIC LEFT
++
+DYNAMIC RIGHT
+
+For major sections.
+
+The left side can show:
+
+section number
+category
+title
+small description
+
+The right side should contain:
+
+scrolling content
+images
+typography
+projects
+animations
+interactive elements
+
+As the visitor scrolls, the right side changes while the left context remains anchored.
+
+This should be one of the defining characteristics of the website.
+
+==================================================
+07 — HERO
+==================================================
+
+Create an exceptional hero.
+
+Do NOT use:
+
+"Hi, I'm Abdul Rehman."
+
+Do NOT create a generic developer hero.
+
+Use strong editorial typography.
+
+Potential direction:
+
+7 YEARS
+OF BUILDING
+DIGITAL EXPERIENCES
+
+You may improve the copy if you can create something stronger.
+
+Hero composition:
+
+- mostly light background
+- huge dark typography
+- green/teal highlighted words
+- Abdul's real portrait
+- OXVID dark geometric shape
+- signature
+- subtle technical/circuit pattern
+- small metadata
+- scroll indicator
+- sophisticated motion
+
+The portrait should be integrated into the composition.
+
+Do not simply place a circular profile image beside text.
+
+Use an editorial/asymmetric composition.
+
+Possible treatment:
+
+portrait overlapping a dark OXVID shape
++
+subtle image reveal
++
+parallax
++
+signature underneath or around the portrait.
+
+==================================================
+08 — PORTRAIT
+==================================================
+
+Use the real Abdul Rehman image from the project assets.
+
+DO NOT:
+
+- generate a different person
+- replace him with an AI avatar
+- distort the face
+- apply excessive filters
+- repeatedly use the same circular profile treatment
+
+The portrait should look premium and natural.
+
+==================================================
+09 — SIGNATURE
+==================================================
+
+If the real Abdul Rehman signature asset exists:
+
+USE IT.
+
+Do not recreate it with a font.
+
+Use it as a personal branding element.
+
+Good placements:
+
+Hero
+About
+Contact
+
+Keep it subtle and elegant.
+
+==================================================
+10 — ABOUT
+==================================================
+
+Create an editorial About experience.
+
+Focus on:
+
+7 YEARS
+EXPERIENCE
+DIGITAL
+WEB
+CREATIVE
+TECHNOLOGY
+
+Do not write a huge biography.
+
+Use:
+
+large typography
+short paragraphs
+large numbers
+scroll reveals
+portrait
+signature
+visual statements
+
+Make it feel like an editorial magazine / digital studio experience.
+
+==================================================
+11 — EXPERIENCE
+==================================================
+
+Create a powerful visual moment around:
+
+7
+
+YEARS
+
+OF EXPERIENCE
+
+The number "7" should be huge.
+
+Animate it with scrolling.
+
+Possible sequence:
+
+7 appears
+↓
+expands
+↓
+supporting text enters
+↓
+experience statements appear
+↓
+section transitions into expertise/work
+
+Make this memorable.
+
+==================================================
+12 — SERVICES / EXPERTISE
+==================================================
+
+Use the supplied reference content.
+
+Primary services:
+
+01
+CUSTOM WEB DEVELOPMENT
+
+02
+PROFESSIONAL CONTENT WRITING
+
+03
+AI AGENTS & AUTOMATION
+
+04
+BRAND IDENTITY & CREATIVE DESIGN
+
+Do NOT make ordinary cards.
+
+Each service should feel like an immersive chapter.
+
+Possible structure:
+
+large number
++
+large title
++
+description
++
+feature list
++
+large reference artwork
++
+scroll animation
++
+technical visual details
+
+==================================================
+13 — SERVICE ANIMATION
+==================================================
+
+Use:
+
+sticky positioning
+image reveal
+scale transitions
+opacity
+clip-path
+text movement
+parallax
+stacking
+depth
+
+Example:
+
+SERVICE 01 enters.
+
+Image becomes visible.
+
+Title moves into position.
+
+Features appear.
+
+As user scrolls:
+
+SERVICE 01 moves backward.
+
+SERVICE 02 overlaps it.
+
+SERVICE 02 becomes dominant.
+
+Then SERVICE 03.
+
+Then SERVICE 04.
+
+The effect must feel cinematic.
+
+==================================================
+14 — SERVICE CONTENT
+==================================================
+
+Use accurate information from the supplied references.
+
+CUSTOM WEB DEVELOPMENT:
+
+- WordPress
+- Elementor
+- React
+- Business Websites
+- E-commerce Stores
+- Landing Pages
+- Responsive Design
+- Speed Optimization
+
+CONTENT WRITING:
+
+- Website Content
+- Landing Page Copy
+- SEO Content
+- Product & Service Descriptions
+- Marketing & Promotional Content
+
+AI AGENTS & AUTOMATION:
+
+- WhatsApp Automation
+- CRM Integration
+- Lead Management
+- Workflow Automation
+- Email & Notification Systems
+
+BRAND IDENTITY:
+
+- Logo Design
+- Brand Guidelines
+- Social Media Branding
+- Business Visual Identity
+- Modern Professional Design
+
+Do not fabricate additional claims.
+
+==================================================
+15 — PROJECTS ARE THE HERO OF THE PORTFOLIO
+==================================================
+
+The Completed Projects section is extremely important.
+
+The visitor must immediately see real work.
+
+Do NOT use:
+
+- simple cards
+- 3-column grid
+- repetitive thumbnails
+- basic image + title + button
+- boring portfolio gallery
+
+Instead create a cinematic:
+
+SELECTED WORK
+
+experience.
+
+==================================================
+16 — ALL 10 PROJECTS
+==================================================
+
+Include ALL of these projects:
+
+01
+JAFFAR ENCLAVE
+https://jaffarenclave-test.web.app/
+
+02
+LUXURY BOXES PACKAGING
+https://luxuryboxespackaging.com/
+
+03
+MY COFFEE SHOP
+https://my-coffee-shop-oxvid.web.app/
+
+04
+HR CART LLC
+https://hrcartllc.web.app/
+
+05
+RISING CRESCENT
+https://risingcrescent.co.uk/
+
+06
+DREAMS NW
+https://www.dreamsnw.com/
+
+07
+VIVID DENTAL
+https://www.vividdental.ca/
+
+08
+JACKSON FAMILY DENTAL
+https://jacksonfamilydentalonline.com/
+
+09
+THE OGDEN
+https://www.theogdenver.com/
+
+10
+FEDERALIST PIG
+https://www.federalistpig.com/
+
+Do not omit any project.
+
+Do not invent additional projects.
+
+==================================================
+17 — PROJECT PREVIEWS
+==================================================
+
+Make the project previews extremely attractive.
+
+Priority:
+
+1. Real screenshots/assets if available.
+2. Real website preview if technically possible.
+3. Browser-frame presentation.
+4. Device mockup presentation.
+5. Large editorial preview.
+
+Never create fake screenshots and claim they are from the live site.
+
+If iframe embedding is allowed, it may be used selectively.
+
+If a website blocks iframe embedding because of CSP/X-Frame-Options:
+
+DO NOT let the project break.
+
+Use a high-quality static preview and provide:
+
+VIEW LIVE SITE →
+
+which opens the real URL in a new tab.
+
+==================================================
+18 — PROJECT STACKING
+==================================================
+
+This must be one of the strongest interactions.
+
+Projects should stack like editorial panels, NOT cards.
+
+Concept:
+
+PROJECT 01
+enters foreground.
+
+Scroll.
+
+PROJECT 01 moves slightly backward.
+
+PROJECT 02 overlaps.
+
+PROJECT 02 becomes dominant.
+
+PROJECT 01 remains partially visible behind it.
+
+Scroll.
+
+PROJECT 03 enters.
+
+Continue.
+
+Use:
+
+scale
+translate
+opacity
+depth
+sticky positioning
+z-index
+subtle blur only when appropriate
+
+Do not overuse rotation or cheap 3D effects.
+
+==================================================
+19 — PROJECT LAYOUT VARIATION
+==================================================
+
+Do not make every project identical.
+
+Use different compositions:
+
+- full-width preview
+- asymmetric split
+- browser mockup
+- editorial image composition
+- large typography + image
+- dark overlay
+- side-by-side
+- device composition
+
+Maintain a consistent design language.
+
+==================================================
+20 — PROJECT INFORMATION
+==================================================
+
+Each project should contain:
+
+PROJECT NUMBER
+
+PROJECT TITLE
+
+CATEGORY
+
+LARGE PREVIEW
+
+SHORT DESCRIPTION
+
+VIEW LIVE SITE
+
+If technology information is available and verified, display it.
+
+Do not invent technologies.
+
+==================================================
+21 — DARK PROJECT MOMENTS
+==================================================
+
+Use OXVID dark sections strategically.
+
+For example:
+
+project enters on light background
+
+↓
+
+dark overlay transition
+
+↓
+
+project preview expands
+
+↓
+
+green/teal accent appears
+
+↓
+
+next project transitions back into light.
+
+This should make the portfolio feel cinematic.
+
+==================================================
+22 — CONTACT
+==================================================
+
+Create a strong final CTA.
+
+Possible headline:
+
+LET'S BUILD
+WHAT'S NEXT.
+
+You may create an even stronger version.
+
+Show:
+
+m.abdulrehman111@gmail.com
+
+info@oxvidsystems.com
+
++92-322-1690030
+
+CTA:
+
+START A PROJECT →
+
+Use:
+
+OXVID dark background
+white typography
+green/teal accents
+subtle technical pattern
+signature
+
+This should feel like the final scene of the experience.
+
+==================================================
+23 — FOOTER
+==================================================
+
+Minimal.
+
+Include:
+
+ABDUL REHMAN
+
+7 YEARS OF DIGITAL EXPERIENCE
+
+OXVID SYSTEMS
+
+Email
+Phone
+
+Do not overload it.
+
+==================================================
+24 — MOTION SYSTEM
+==================================================
+
+Motion should feel expensive.
+
+Use:
+
+- smooth scroll-triggered reveals
+- sticky sections
+- text masking
+- image clipping
+- parallax
+- stacking
+- scale transitions
+- opacity
+- transform
+- subtle cursor interactions
+- hover movement
+- active navigation transitions
+
+Use animation hierarchy.
+
+Not everything should move.
+
+Avoid:
+
+- excessive bouncing
+- excessive rotation
+- neon glow everywhere
+- gimmicky 3D
+- distracting particles
+- slow animations that make the website annoying
+
+==================================================
+25 — MICRO INTERACTIONS
+==================================================
+
+Add polished details:
+
+button arrow moves on hover
+
+project preview shifts subtly
+
+navigation active indicator animates
+
+section number changes
+
+text underline reveals
+
+images respond subtly to cursor
+
+scroll progress updates
+
+hover states feel physical
+
+Everything should feel intentional.
+
+==================================================
+26 — TYPOGRAPHY
+==================================================
+
+Use strong modern typography.
+
+Prioritize:
+
+large editorial headlines
+short line lengths
+uppercase micro-labels
+large numbers
+strong hierarchy
+careful letter spacing
+
+Do not use too many fonts.
+
+Typography should carry much of the visual identity.
+
+==================================================
+27 — RESPONSIVE
+==================================================
+
+Desktop:
+
+full art-directed experience.
+
+Tablet:
+
+preserve composition but simplify.
+
+Mobile:
+
+DO NOT merely shrink desktop.
+
+Create a dedicated mobile experience.
+
+Mobile must preserve:
+
+- strong typography
+- portrait
+- signature
+- project previews
+- stacking storytelling
+- navigation
+- CTA
+
+Heavy animations can be simplified where necessary.
+
+==================================================
+28 — ACCESSIBILITY
+==================================================
+
+Implement:
+
+semantic HTML
+keyboard navigation
+focus states
+proper alt text
+accessible buttons
+good contrast
+touch-friendly controls
+prefers-reduced-motion
+
+==================================================
+29 — PERFORMANCE
+==================================================
+
+The website must feel fast.
+
+Optimize:
+
+images
+fonts
+animations
+JavaScript
+project previews
+
+Use lazy loading.
+
+Prefer transform and opacity animations.
+
+Avoid unnecessary layout calculations.
+
+Do not sacrifice performance for decorative effects.
+
+==================================================
+30 — TECHNICAL QUALITY
+==================================================
+
+Write production-quality code.
+
+Use:
+
+reusable components
+centralized project data
+reusable animation utilities
+clean CSS
+semantic markup
+clear component architecture
+
+Do not duplicate the same markup unnecessarily.
+
+Keep the project easy to maintain.
+
+==================================================
+31 — NO FABRICATION
+==================================================
+
+Never invent:
+
+awards
+clients
+reviews
+testimonials
+revenue
+user counts
+certifications
+fake project details
+fake technologies
+fake achievements
+
+Use only supplied or verifiable information.
+
+==================================================
+32 — FINAL VISUAL POLISH
+==================================================
+
+After implementing the website, do a dedicated polish pass.
+
+Check:
+
+spacing
+typography
+alignment
+animation timing
+mobile layout
+project transitions
+image cropping
+navigation
+hover states
+contrast
+loading
+performance
+
+Remove anything that feels:
+
+generic
+template-like
+AI-generated
+over-designed
+unnecessary
+
+==================================================
+33 — SELF-CRITIQUE
+==================================================
+
+Before declaring completion, evaluate the website as if you are an Awwwards jury member.
+
+Ask:
+
+Does the hero create an immediate visual impression?
+
+Does the website look mostly light?
+
+Is the OXVID dark color used as a signature contrast?
+
+Are the green/teal accents controlled?
+
+Does the left navigation feel unique?
+
+Does the static-left/dynamic-right interaction work?
+
+Does scrolling feel cinematic?
+
+Do services feel immersive?
+
+Do projects feel like real case studies rather than cards?
+
+Are all 10 projects included?
+
+Are project previews impressive?
+
+Does Abdul's portrait feel professionally integrated?
+
+Does the signature feel authentic?
+
+Does the contact section feel like a final scene?
+
+Does mobile feel intentionally designed?
+
+Does anything look like a generic AI template?
+
+If YES to the last question:
+
+REDESIGN THAT PART.
+
+==================================================
+34 — MOST IMPORTANT CREATIVE RULE
+==================================================
+
+Do not optimize for:
+
+"How quickly can I make a portfolio?"
+
+Optimize for:
+
+"How can I create a memorable digital experience that proves Abdul Rehman is an experienced digital professional?"
+
+The website itself is the portfolio.
+
+Every interaction should support that idea.
+
+==================================================
+35 — FINAL DELIVERABLE
+==================================================
+
+Build the complete production-ready website.
+
+Do not stop at a wireframe.
+
+Do not stop at a basic first draft.
+
+Do not provide only recommendations.
+
+Actually implement:
+
+navigation
+hero
+about
+experience
+services
+stacking interactions
+projects
+project previews
+contact
+footer
+responsive behavior
+animations
+micro-interactions
+accessibility
+performance optimizations
+
+Then review the entire experience and refine it.
+
+The final result should feel:
+
+PREMIUM
+LIGHT
+EDITORIAL
+TECHNICAL
+CINEMATIC
+PERSONAL
+MODERN
+MEMORABLE
+
+The final visual identity should communicate:
+
+ABDUl REHMAN
+
+7 YEARS OF EXPERIENCE
+
+OXVID SYSTEMS
+
+TECHNOLOGY
+SOLUTIONS
+GROWTH
+
+Build something that looks like a premium award-winning digital portfolio — not a template.

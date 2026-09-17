@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ContactForm } from "./contact-form";
 import { ContactTrace } from "./contact-trace";
 import {
@@ -166,10 +167,19 @@ export function Contact() {
             sign.revealed ? "animate-reveal-up" : "opacity-0"
           }`}
         >
-          <p className="max-w-sm text-small leading-normal text-paper-0/80">
-            Every project runs through one person end to end — brief, build
-            and handover.
-          </p>
+          <div className="flex flex-col gap-4">
+            <p className="max-w-sm text-small leading-normal text-paper-0/80">
+              Every project runs through one person end to end — brief, build
+              and handover.
+            </p>
+
+            <Link
+              href="/privacy-policy"
+              className="w-fit font-mono text-micro tracking-widest text-paper-0/50 transition-colors hover:text-accent-mint"
+            >
+              PRIVACY POLICY
+            </Link>
+          </div>
 
           <div className="sm:text-right">
             <p
