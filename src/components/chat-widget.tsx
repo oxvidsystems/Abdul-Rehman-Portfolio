@@ -249,12 +249,13 @@ export function ChatWidget() {
   }, []);
 
   /**
-   * Start the enquiry: POST the answers, get a verification handle back.
+   * Start the enquiry: POST the answers straight to the Google Sheet.
    *
-   * A 202 means the server stored a PENDING lead and emailed a code. It does
-   * NOT mean the enquiry is done — `emailVerified` is still false and stays
-   * false until /api/leads/verify accepts the code. That is the whole point
-   * of this step, so the UI must not celebrate here.
+   * Rev. 2 — no OTP step. A 202 means the lead is already a row in the
+   * sheet. `verifyEmail` is still set (the success screen reuses it) but
+   * `verificationId` is never used for anything now; the verify/resend
+   * functions below are dead code kept only so the (now unreachable) code
+   * step still type-checks if it's ever wired back up.
    */
   const onComplete = useCallback(async () => {
     setPhase("sending");
@@ -277,19 +278,12 @@ export function ChatWidget() {
         }),
       });
 
-      const payload: {
-        error?: string;
-        verificationId?: string;
-        email?: string;
-      } = await response.json().catch(() => ({}));
+      const payload: { error?: string } = await response.json().catch(() => ({}));
 
-      if (response.ok && payload.verificationId) {
-        setVerificationId(payload.verificationId);
-        setVerifyEmail(payload.email ?? answerFor("email"));
-        setAttemptsLeft(null);
-        setResendAt(Date.now() + RESEND_COOLDOWN_MS);
+      if (response.ok) {
+        setVerifyEmail(answerFor("email"));
         setAnnounced(false);
-        setPhase("verify");
+        setPhase("verified");
         return;
       }
 
@@ -463,7 +457,7 @@ export function ChatWidget() {
         rows.push({ key: `q-${step.id}-free`, from: "bot", text: step.freeTextPrompt });
       }
     }
-    if ((phase === "verify" || phase === "verifying" || phase === "verified") && announced) {
+    if ((phase === "verify" || phase === "verifying") && announced) {
       rows.push({ key: "verify-intro", from: "bot", text: CHAT_VERIFY_INTRO });
       rows.push({ key: "verify-prompt", from: "bot", text: CHAT_VERIFY_PROMPT });
     }

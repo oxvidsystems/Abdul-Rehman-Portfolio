@@ -131,18 +131,11 @@ export function ContactForm() {
         const payload: {
           error?: string;
           fields?: FieldErrors;
-          verificationId?: string;
-          email?: string;
         } = await response.json().catch(() => ({}));
 
-        if (response.ok && payload.verificationId) {
-          setVerificationId(payload.verificationId);
-          setSentTo(payload.email ?? String(data.get("email") ?? ""));
-          setAttemptsLeft(null);
-          setCode("");
-          setResendAt(Date.now() + RESEND_COOLDOWN_MS);
-          setNow(Date.now());
-          setPhase("verify");
+        if (response.ok) {
+          setSentTo(String(data.get("email") ?? ""));
+          setPhase("done");
           return;
         }
         if (payload.fields) setFieldErrors(payload.fields);
